@@ -1,0 +1,34 @@
+
+
+## New Features
+
+ - Start working on the browser component !
+ 
+ 	- Ability to search and scrap media info
+ 	
+ 	- Ability to check wheather a movie exists in the local library or not before downloading 
+
+
+## Scraping
+
+ - Create Unit testing for:
+	- scenario when the file name is useless, but the folder name is usefull to use during the scraping. 
+	  The Elephant.White.2011.720p.BluRay.x264-Japhson is a good example.
+	  
+	  
+	  
+## JUNIT
+ - For UNIT test and also Swing test create a template folder with the media files, then copy to the test location and execute the tests on top of the test location. 
+  When the test is finished delete the test location. The template folder will always be intact.
+  
+  
+ - Create a unit test that invokes the Swing UI and run the application using the real UI and Threads.
+
+
+## General improvements
+
+ - Improve the isInExclusiveFolder implementation.
+	- Elephant White for example is not recogniing that it has its own folder
+	
+
+ - Implement a XML configuration file for the application

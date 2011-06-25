@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="movie">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="title"/>
+        <xs:element ref="originaltitle"/>
+        <xs:element ref="sorttitle"/>
+        <xs:element ref="set"/>
+        <xs:element ref="rating"/>
+        <xs:element ref="year"/>
+        <xs:element ref="top250"/>
+        <xs:element ref="votes"/>
+        <xs:element ref="outline"/>
+        <xs:element ref="plot"/>
+        <xs:element ref="tagline"/>
+        <xs:element ref="runtime"/>
+        <xs:element ref="thumb"/>
+        <xs:element ref="mpaa"/>
+        <xs:element ref="playcount"/>
+        <xs:element ref="watched"/>
+        <xs:element ref="id"/>
+        <xs:element ref="filenameandpath"/>
+        <xs:element ref="trailer"/>
+        <xs:element ref="genre"/>
+        <xs:element ref="credits"/>
+        <xs:element ref="fileinfo"/>
+        <xs:element ref="director"/>
+        <xs:element maxOccurs="unbounded" ref="actor"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="title" type="xs:string"/>
+  <xs:element name="originaltitle" type="xs:string"/>
+  <xs:element name="sorttitle" type="xs:string"/>
+  <xs:element name="set" type="xs:string"/>
+  <xs:element name="rating" type="xs:string"/>
+  <xs:element name="year" type="xs:integer"/>
+  <xs:element name="top250" type="xs:integer"/>
+  <xs:element name="votes" type="xs:integer"/>
+  <xs:element name="outline" type="xs:string"/>
+  <xs:element name="plot" type="xs:string"/>
+  <xs:element name="tagline">
+    <xs:complexType/>
+  </xs:element>
+  <xs:element name="runtime" type="xs:string"/>
+  <xs:element name="thumb" type="xs:anyURI"/>
+  <xs:element name="mpaa" type="xs:string"/>
+  <xs:element name="playcount" type="xs:integer"/>
+  <xs:element name="watched" type="xs:boolean"/>
+  <xs:element name="id" type="xs:NCName"/>
+  <xs:element name="filenameandpath" type="xs:string"/>
+  <xs:element name="trailer">
+    <xs:complexType/>
+  </xs:element>
+  <xs:element name="genre">
+    <xs:complexType/>
+  </xs:element>
+  <xs:element name="credits">
+    <xs:complexType/>
+  </xs:element>
+  <xs:element name="fileinfo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="streamdetails"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="streamdetails">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="video"/>
+        <xs:element maxOccurs="unbounded" ref="audio"/>
+        <xs:element ref="subtitle"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="video">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="codec"/>
+        <xs:element ref="aspect"/>
+        <xs:element ref="width"/>
+        <xs:element ref="height"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="aspect" type="xs:decimal"/>
+  <xs:element name="width" type="xs:integer"/>
+  <xs:element name="height" type="xs:integer"/>
+  <xs:element name="audio">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="codec"/>
+        <xs:element ref="language"/>
+        <xs:element ref="channels"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="channels" type="xs:integer"/>
+  <xs:element name="subtitle">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="language"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="director" type="xs:string"/>
+  <xs:element name="actor">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="name"/>
+        <xs:element ref="role"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="name" type="xs:string"/>
+  <xs:element name="role" type="xs:NCName"/>
+  <xs:element name="codec" type="xs:NCName"/>
+  <xs:element name="language" type="xs:NCName"/>
+</xs:schema>
