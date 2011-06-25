@@ -527,7 +527,8 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		boolean renamed = false;
 		// rename file
 		if (isMultiPart()) {
-			for (String fileKey : files.keySet()) {
+			String[] fileNames = files.keySet().toArray(new String[]{});
+			for (String fileKey : fileNames) {
 				File file = files.get(fileKey);
 				String[] parts = Util.getMultiPartSufix(file.getName());
 				newFileName = buildNewFileName(file, candidateNFO, parts[2]);

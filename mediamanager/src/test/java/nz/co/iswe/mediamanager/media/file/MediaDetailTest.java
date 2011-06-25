@@ -68,7 +68,7 @@ public class MediaDetailTest {
 		Assert.assertFalse("Media hasSiblings", mediaDetail.isMultiPart());
 		
 		//media folder exclusive
-		Assert.assertFalse("Media folder exclusive", mediaDetail.getMediaFolder().isExclusive(mediaDetail) );
+		Assert.assertFalse("Media folder exclusive", mediaDetail.isInExclusiveFolder() );
 		
 		//assert subtitles
 		Assert.assertTrue("Media has subtitles", mediaDetail.hasSubtitles() );
@@ -122,7 +122,7 @@ public class MediaDetailTest {
 		Assert.assertNull("MediaNFO Year", movieFileNFO.getYear() );
 		Assert.assertEquals("MediaNFO MediaType", MediaType.MOVIE, movieFileNFO.getMediaType() );
 		Assert.assertNull("MediaNFO Thumb", movieFileNFO.getThumb() );
-		Assert.assertEquals("MediaNFO FilenameAndPath", testMediaFolder.getPath() + "\\1-3-3-8 com twz-drive angry 720p.mkv", movieFileNFO.getMovie().getFilenameandpath() );
+		Assert.assertEquals("MediaNFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twz-drive angry 720p.mkv", movieFileNFO.getMovie().getFilenameandpath() );
 		
 		nfoFile = new File(testMediaFolder, "1-3-3-8 com twz-drive angry 720p.nfo");
 		Assert.assertTrue("NFO does exists", nfoFile.exists());
@@ -157,7 +157,7 @@ public class MediaDetailTest {
 		//filename has changed
 		Assert.assertEquals("Filename", "Drive Angry (2011)", mediaDetail.getFileName() );
 		
-		Assert.assertEquals("MediaNFO FilenameAndPath", testMediaFolder.getPath() + "\\Drive Angry (2011).mkv", movieFileNFO.getMovie().getFilenameandpath() );		
+		Assert.assertEquals("MediaNFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "Drive Angry (2011).mkv", movieFileNFO.getMovie().getFilenameandpath() );		
 		
 		//poster image is a reference only...
 		Assert.assertNotNull("Media PosterImage", mediaDetail.getPosterImage() );
@@ -201,7 +201,7 @@ public class MediaDetailTest {
 		
 		// ##### Assert 05 ##### //
 		Assert.assertEquals("Filename", "Drive Angry (2011)", mediaDetail.getFileName() );
-		Assert.assertEquals("MediaNFO FilenameAndPath", testMediaFolder.getPath() + "\\Drive Angry (2011)\\Drive Angry (2011).mkv", movieFileNFO.getMovie().getFilenameandpath() );		
+		Assert.assertEquals("MediaNFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "Drive Angry (2011)" + File.separator + "Drive Angry (2011).mkv", movieFileNFO.getMovie().getFilenameandpath() );		
 		Assert.assertFalse("Media hasSiblings", mediaDetail.isMultiPart());
 		
 		//check if the file has being physicaly renamed
@@ -257,7 +257,7 @@ public class MediaDetailTest {
 		posterImageFile = new File(newMediaFolder, "cover.jpg");
 		Assert.assertTrue("Poster Image file must exist", posterImageFile.exists());
 		
-		Assert.assertEquals("MediaNFO Thumb", testMediaFolder.getPath() + "\\Drive Angry (2011)\\cover.jpg", mediaDetail.getMediaNFO().getThumb() );
+		Assert.assertEquals("MediaNFO Thumb", testMediaFolder.getPath() + File.separator + "Drive Angry (2011)" + File.separator + "cover.jpg", mediaDetail.getMediaNFO().getThumb() );
 		
 		nfoFile = new File(newMediaFolder, "Drive Angry (2011).nfo");
 		Assert.assertTrue("NFO does exists", nfoFile.exists());
@@ -272,7 +272,7 @@ public class MediaDetailTest {
 		
 		// ##### Assert 07 ##### //
 		Assert.assertEquals("Filename", "Drive Angry (2010)", mediaDetail.getFileName() );
-		Assert.assertEquals("MediaNFO FilenameAndPath", testMediaFolder.getPath() + "\\Drive Angry (2010)\\Drive Angry (2010).mkv", movieFileNFO.getMovie().getFilenameandpath() );		
+		Assert.assertEquals("MediaNFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "Drive Angry (2010)" + File.separator + "Drive Angry (2010).mkv", movieFileNFO.getMovie().getFilenameandpath() );		
 		
 		Assert.assertEquals("MediaNFO Year", new Integer(2010), mediaDetail.getMediaNFO().getYear() );
 		Assert.assertEquals("MediaNFO Title", "Drive Angry", mediaDetail.getMediaNFO().getTitle() );
@@ -291,7 +291,7 @@ public class MediaDetailTest {
 		posterImageFile = new File(newMediaFolder, "cover.jpg");
 		Assert.assertTrue("Poster Image file must exist", posterImageFile.exists());
 		
-		Assert.assertEquals("MediaNFO Thumb", testMediaFolder.getPath() + "\\Drive Angry (2010)\\cover.jpg", mediaDetail.getMediaNFO().getThumb() );
+		Assert.assertEquals("MediaNFO Thumb", testMediaFolder.getPath() + File.separator + "Drive Angry (2010)" + File.separator + "cover.jpg", mediaDetail.getMediaNFO().getThumb() );
 		
 		Assert.assertFalse("Old NFO does NOT exists", nfoFile.exists());
 		nfoFile = new File(newMediaFolder, "Drive Angry (2010).nfo");
@@ -391,7 +391,7 @@ public class MediaDetailTest {
 		Assert.assertEquals("MediaNFO MediaType", MediaType.MOVIE, mediaDetail.getMediaNFO().getMediaType() );
 		
 		Assert.assertNotNull("MediaNFO Thumb", mediaDetail.getMediaNFO().getThumb() );
-		Assert.assertEquals("MediaNFO Thumb", testMediaFolder.getPath() + "\\Limitless (2011)\\cover.jpg", mediaDetail.getMediaNFO().getThumb() );
+		Assert.assertEquals("MediaNFO Thumb", testMediaFolder.getPath() + File.separator + "Limitless (2011)" + File.separator + "cover.jpg", mediaDetail.getMediaNFO().getThumb() );
 		
 		
 		

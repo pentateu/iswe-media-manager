@@ -43,8 +43,9 @@ public class Util {
 		double numberOfMatches = 0;
 		for (String fromTerm : termsFrom) {
 			for (String toTerm : termsTo) {
-				if (isCloseEnought(fromTerm, toTerm, 80)) {
+				if (isCloseEnought(fromTerm, toTerm, 60)) {
 					numberOfMatches++;
+					continue;
 				}
 			}
 		}
@@ -54,10 +55,11 @@ public class Util {
 		return score;
 	}
 
-	private static boolean isCloseEnought(String from, String to, double minimum) {
+	protected static boolean isCloseEnought(String from, String to, double minimum) {
 		int size = Math.max(from.length(), to.length());
 		int lfd = StringUtils.getLevenshteinDistance(from, to);
 		double ratio = ((double)lfd) / size;
+		ratio = (1 - ratio) * 100;
 		return ratio >= minimum;
 	}
 

@@ -36,6 +36,8 @@ public class JMainWindow {
 	private JButton scrapingButton;
 	private MediaListPanel mediaListPanel;
 	private MediaDetailTabPanel mediaDetailTabPanel;
+	
+	protected String defaultScrapingMediaFolder = "";
 
 	private MediaListPanelListener mediaListPanelListener = new MediaListPanelListener() {
 		@Override
@@ -45,10 +47,12 @@ public class JMainWindow {
 		}
 	};
 	
+	
+	
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -56,7 +60,14 @@ public class JMainWindow {
 					InputStream loggingProps = JMainWindow.class.getClassLoader().getResourceAsStream("logging.properties");
 					LogManager.getLogManager().readConfiguration(loggingProps);
 					
-					JMainWindow window = new JMainWindow();
+					String defaultScrapingMediaFolder = "";
+					
+					if(args.length > 0){
+						defaultScrapingMediaFolder = args[0];
+					}
+					
+					JMainWindow window = new JMainWindow(defaultScrapingMediaFolder);
+					
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -69,6 +80,11 @@ public class JMainWindow {
 	 * Create the application.
 	 */
 	public JMainWindow() {
+		initialize();
+	}
+	
+	public JMainWindow(String defaultScrapingMediaFolder) {
+		this.defaultScrapingMediaFolder = defaultScrapingMediaFolder;
 		initialize();
 	}
 
@@ -87,7 +103,7 @@ public class JMainWindow {
 		frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 
 		mediaFolder = new JTextField(MEDIA_FOLDER);
-		mediaFolder.setText("G:\\Media\\scraping");
+		mediaFolder.setText(defaultScrapingMediaFolder);
 		mediaFolder.setColumns(40);
 
 		browseButton = new JButton("Browse");

@@ -56,7 +56,7 @@ public class SubtitleContextTest extends TestUtil {
 		Assert.assertEquals("MediaNFO Title", "Limitless", mediaFileDefinition.getMediaNFO().getTitle() );
 		Assert.assertEquals("MediaNFO MediaType", MediaType.MOVIE, mediaFileDefinition.getMediaNFO().getMediaType() );
 		Assert.assertNotNull("MediaNFO Thumb", mediaFileDefinition.getMediaNFO().getThumb() );
-		Assert.assertEquals("MediaNFO Thumb", testMediaFolder.getPath() + "\\Limitless (2011)\\cover.jpg", mediaFileDefinition.getMediaNFO().getThumb() );
+		Assert.assertEquals("MediaNFO Thumb", testMediaFolder.getPath() + File.separator + "Limitless (2011)" + File.separator + "cover.jpg", mediaFileDefinition.getMediaNFO().getThumb() );
 		
 		//assert subtitles
 		Assert.assertTrue("Media has subtitles", mediaFileDefinition.hasSubtitles() );

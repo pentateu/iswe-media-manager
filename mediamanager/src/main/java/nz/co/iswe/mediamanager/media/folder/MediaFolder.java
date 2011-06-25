@@ -8,6 +8,8 @@ import java.util.List;
 import nz.co.iswe.mediamanager.Util;
 import nz.co.iswe.mediamanager.media.file.MediaDetail;
 import nz.co.iswe.mediamanager.media.file.MediaFileException;
+import nz.co.iswe.mediamanager.text.FileNameNormalizer;
+import nz.co.iswe.mediamanager.text.NormalizerFactory;
 
 public class MediaFolder {
 
@@ -99,7 +101,7 @@ public class MediaFolder {
 		// with other media files
 		double score = scoreFolder_01(mediaFileDefinition);
 		
-		if (score >= 50) {// close enought ;-)
+		if (score >= 50) {// close enough ;-)
 			//mediaFolder = parentFolder;
 			return true;
 		}
@@ -110,13 +112,28 @@ public class MediaFolder {
 		
 		File folder = getFile();
 		
-		//scoring using the filename and folder name
-		double score = Util.compareAndScore(folder.getName(), mediaDetail.getFileName());
+		String folderName = folder.getName();
+		String fileName = mediaDetail.getFileName();
 		
-		if (score >= 50) {// close enought ;-)
+		//scoring using the filename and folder name
+		double score = Util.compareAndScore(folderName, fileName);
+		
+		if (score >= 80) {// close enough ;-)
 			return score;
 		}
+		
+		
+		//Clean up the File name and Folder name
+		FileNameNormalizer normalizer = NormalizerFactory.getInstance().getFileNameNormalizer();
+		folderName = normalizer.normalize(folder.getName());
+		fileName = normalizer.normalize(mediaDetail.getFileName());
 
+		score = Util.compareAndScore(folderName, fileName);
+		
+		if (score >= 70) {// close enough ;-)
+			return score;
+		}
+		
 		//Scoring based on the number of files inside the folder
 		// get the number of files inside the parent folder that are also media
 		// files

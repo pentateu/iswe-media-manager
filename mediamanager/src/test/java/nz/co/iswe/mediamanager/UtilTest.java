@@ -11,7 +11,25 @@ import org.junit.Test;
 public class UtilTest {
 
 	private static final String TEST_MEDIA_TEMPLATE_FOLDER = "test.media.template.folder";
-
+	
+	@Test
+	public void testIsisCloseEnought(){
+		
+		String st1 = "Tabajara";
+		String st2 = "Tabajara";
+		Assert.assertTrue(Util.isCloseEnought(st1, st2, 50));
+		
+		st1 = "Elephant";
+		st2 = "elephantwhite";
+		Assert.assertTrue(Util.isCloseEnought(st1, st2, 50));
+		
+		st1 = "Totalmente";
+		st2 = "diferente";
+		Assert.assertFalse(Util.isCloseEnought(st1, st2, 50));
+		
+		
+	}
+	
 	/**
 	 * Examples:
 	 *  - 22.Bullets.2010 - cd2.avi : It will return result[0] = "cd" and result[1] = "2"

@@ -140,7 +140,7 @@ public class CandidateMediaDetailTest  {
 		Assert.assertNull("NFO Year", candidate_0_nfo.getYear());
 		Assert.assertNull("NFO Thumb", candidate_0_nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.MOVIE, candidate_0_nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\1-3-3-8 com twz-drive angry 720p.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twz-drive angry 720p.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );
 		
 		//candidate folder
 		File candidate_0_folder = new File(testMediaFolder, "1-3-3-8_com_twz-drive_angry_720p_candidate_0");
@@ -221,7 +221,7 @@ public class CandidateMediaDetailTest  {
 		Assert.assertNull("NFO Year", candidate_0_nfo.getYear());
 		Assert.assertNull("NFO Thumb", candidate_0_nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.MOVIE, candidate_0_nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\1-3-3-8 com twz-drive angry 720p.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );		
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twz-drive angry 720p.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );		
 		
 		//candidate folder
 		File candidate_0_folder = new File(testMediaFolder, "1-3-3-8_com_twz-drive_angry_720p_candidate_0");
@@ -288,9 +288,9 @@ public class CandidateMediaDetailTest  {
 		MovieFileNFO candidate_0_nfo = (MovieFileNFO)candidate_0.getMediaNFO();
 		Assert.assertEquals("Title", "Drive Angry", candidate_0_nfo.getTitle() );
 		Assert.assertEquals("NFO Year", new Integer(2011), candidate_0_nfo.getYear());
-		Assert.assertEquals("NFO Thumb", testMediaFolder.getPath() + "\\1-3-3-8_com_twz-drive_angry_720p_candidate_0\\cover.jpg", candidate_0_nfo.getThumb());
+		Assert.assertEquals("NFO Thumb", testMediaFolder.getPath() + File.separator + "1-3-3-8_com_twz-drive_angry_720p_candidate_0" + File.separator + "cover.jpg", candidate_0_nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.MOVIE, candidate_0_nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\1-3-3-8 com twz-drive angry 720p.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );		
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twz-drive angry 720p.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );		
 		
 		Assert.assertEquals("NFO Rating", "0.1", candidate_0_nfo.getRating());
 		Assert.assertEquals("NFO Outline", "This movie is horrible...", candidate_0_nfo.getOutline());
@@ -361,9 +361,9 @@ public class CandidateMediaDetailTest  {
 		MovieFileNFO candidate_0_nfo = (MovieFileNFO)candidate_0.getMediaNFO();
 		Assert.assertEquals("Title", "Drive Angry", candidate_0_nfo.getTitle() );
 		Assert.assertEquals("NFO Year", new Integer(2011), candidate_0_nfo.getYear());
-		Assert.assertEquals("NFO Thumb", testMediaFolder.getPath() + "\\1-3-3-8_com_twz-drive_angry_720p_candidate_0\\cover.jpg", candidate_0_nfo.getThumb());
+		Assert.assertEquals("NFO Thumb", testMediaFolder.getPath() + File.separator + "1-3-3-8_com_twz-drive_angry_720p_candidate_0" + File.separator + "cover.jpg", candidate_0_nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.MOVIE, candidate_0_nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\1-3-3-8 com twz-drive angry 720p.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );		
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twz-drive angry 720p.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );		
 		
 		//candidate folder
 		File candidate_0_folder = new File(testMediaFolder, "1-3-3-8_com_twz-drive_angry_720p_candidate_0");
@@ -448,7 +448,7 @@ public class CandidateMediaDetailTest  {
 		Assert.assertEquals("NFO Year", new Integer(1995), candidate_1_nfo.getYear());
 		Assert.assertNull("NFO Thumb", candidate_1_nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.DOCUMENTARY, candidate_1_nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\1-3-3-8 com twz-drive angry 720p.mkv", candidate_1_nfo.getMovie().getFilenameandpath() );		
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twz-drive angry 720p.mkv", candidate_1_nfo.getMovie().getFilenameandpath() );		
 		
 		//candidate folder
 		File candidate_1_folder = new File(testMediaFolder, "1-3-3-8_com_twz-drive_angry_720p_candidate_1");
@@ -479,7 +479,7 @@ public class CandidateMediaDetailTest  {
 		Assert.assertEquals("NFO Year", new Integer(2010), candidate_2_nfo.getYear());
 		Assert.assertNull("NFO Thumb", candidate_2_nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.TV_SHOW, candidate_2_nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\1-3-3-8 com twz-drive angry 720p.mkv", candidate_2_nfo.getMovie().getFilenameandpath() );		
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twz-drive angry 720p.mkv", candidate_2_nfo.getMovie().getFilenameandpath() );		
 		
 		//candidate folder
 		File candidate_2_folder = new File(testMediaFolder, "1-3-3-8_com_twz-drive_angry_720p_candidate_2");
@@ -535,9 +535,9 @@ public class CandidateMediaDetailTest  {
 		MovieFileNFO nfo = (MovieFileNFO)mediaFileDefinition.getMediaNFO();
 		Assert.assertEquals("Title", "Drive Angry", nfo.getTitle() );
 		Assert.assertEquals("NFO Year", new Integer(2011), nfo.getYear());
-		Assert.assertEquals("NFO Thumb", testMediaFolder.getPath() + "\\cover.jpg", nfo.getThumb());
+		Assert.assertEquals("NFO Thumb", testMediaFolder.getPath() + File.separator + "cover.jpg", nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.MOVIE, nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\Drive Angry (2011).mkv", nfo.getFilenameAndPath());		
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "Drive Angry (2011).mkv", nfo.getFilenameAndPath());		
 		
 		Assert.assertEquals("NFO Rating", "0.1", nfo.getRating());
 		Assert.assertEquals("NFO Outline", "This movie is horrible...", nfo.getOutline());

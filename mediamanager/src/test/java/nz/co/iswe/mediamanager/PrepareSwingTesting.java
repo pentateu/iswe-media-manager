@@ -19,15 +19,11 @@ public class PrepareSwingTesting {
 			throw new RuntimeException("Erro seting up the testing folder!", e);
 		}
 		
+		args = new String[1];
+		args[0] = TestSuitConfig.getSwingTestMediaFolder().getPath();
+		
 		JMainWindow.main(args);
 	}
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	protected static void move(File from, File to) {

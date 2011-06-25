@@ -135,7 +135,7 @@ public class CandidateMediaDetailTest_02  {
 		Assert.assertNull("NFO Year", candidate_0_nfo.getYear());
 		Assert.assertNull("NFO Thumb", candidate_0_nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.MOVIE, candidate_0_nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\1-3-3-8 com twiz-hp7part1-720p-rpk\\1-3-3-8 com twiz-hp7part1-720p-rpk.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk" + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );
 		
 		//candidate folder
 		File candidate_0_folder = new File(testMediaFolder, "1-3-3-8 com twiz-hp7part1-720p-rpk/1-3-3-8_com_twiz-hp7part1-720p-rpk_candidate_0");
@@ -216,7 +216,7 @@ public class CandidateMediaDetailTest_02  {
 		Assert.assertNull("NFO Year", candidate_0_nfo.getYear());
 		Assert.assertNull("NFO Thumb", candidate_0_nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.MOVIE, candidate_0_nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\1-3-3-8 com twiz-hp7part1-720p-rpk\\1-3-3-8 com twiz-hp7part1-720p-rpk.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk" + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );
 		
 		//candidate folder
 		File candidate_0_folder = new File(testMediaFolder, "1-3-3-8 com twiz-hp7part1-720p-rpk/1-3-3-8_com_twiz-hp7part1-720p-rpk_candidate_0");
@@ -280,9 +280,9 @@ public class CandidateMediaDetailTest_02  {
 		MovieFileNFO candidate_0_nfo = (MovieFileNFO)candidate_0.getMediaNFO();
 		Assert.assertEquals("Title", "Harry Potter and The Deathly Hallows - Part 1", candidate_0_nfo.getTitle() );
 		Assert.assertEquals("NFO Year", new Integer(2011), candidate_0_nfo.getYear());
-		Assert.assertEquals("NFO Thumb", testMediaFolder.getPath() + "\\1-3-3-8 com twiz-hp7part1-720p-rpk\\1-3-3-8_com_twiz-hp7part1-720p-rpk_candidate_0\\cover.jpg", candidate_0_nfo.getThumb());
+		Assert.assertEquals("NFO Thumb", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk" + File.separator + "1-3-3-8_com_twiz-hp7part1-720p-rpk_candidate_0" + File.separator + "cover.jpg", candidate_0_nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.MOVIE, candidate_0_nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\1-3-3-8 com twiz-hp7part1-720p-rpk\\1-3-3-8 com twiz-hp7part1-720p-rpk.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );		
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk" + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );		
 		
 		Assert.assertEquals("NFO Rating", "8.5", candidate_0_nfo.getRating());
 		Assert.assertEquals("NFO Outline", "Great movie...", candidate_0_nfo.getOutline());
@@ -353,9 +353,9 @@ public class CandidateMediaDetailTest_02  {
 		MovieFileNFO candidate_0_nfo = (MovieFileNFO)candidate_0.getMediaNFO();
 		Assert.assertEquals("Title", "Harry Potter and The Deathly Hallows - Part 1", candidate_0_nfo.getTitle() );
 		Assert.assertEquals("NFO Year", new Integer(2011), candidate_0_nfo.getYear());
-		Assert.assertEquals("NFO Thumb", testMediaFolder.getPath() + "\\1-3-3-8 com twiz-hp7part1-720p-rpk\\1-3-3-8_com_twiz-hp7part1-720p-rpk_candidate_0\\cover.jpg", candidate_0_nfo.getThumb());
+		Assert.assertEquals("NFO Thumb", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk" + File.separator + "1-3-3-8_com_twiz-hp7part1-720p-rpk_candidate_0" + File.separator + "cover.jpg", candidate_0_nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.MOVIE, candidate_0_nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\1-3-3-8 com twiz-hp7part1-720p-rpk\\1-3-3-8 com twiz-hp7part1-720p-rpk.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );		
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk" + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk.mkv", candidate_0_nfo.getMovie().getFilenameandpath() );		
 		
 		//candidate folder
 		File candidate_0_folder = new File(testMediaFolder, "1-3-3-8 com twiz-hp7part1-720p-rpk/1-3-3-8_com_twiz-hp7part1-720p-rpk_candidate_0");
@@ -440,7 +440,7 @@ public class CandidateMediaDetailTest_02  {
 		Assert.assertEquals("NFO Year", new Integer(1995), candidate_1_nfo.getYear());
 		Assert.assertNull("NFO Thumb", candidate_1_nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.DOCUMENTARY, candidate_1_nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\1-3-3-8 com twiz-hp7part1-720p-rpk\\1-3-3-8 com twiz-hp7part1-720p-rpk.mkv", candidate_1_nfo.getMovie().getFilenameandpath() );		
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk" + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk.mkv", candidate_1_nfo.getMovie().getFilenameandpath() );		
 		
 		//candidate folder
 		File candidate_1_folder = new File(testMediaFolder, "1-3-3-8 com twiz-hp7part1-720p-rpk/1-3-3-8_com_twiz-hp7part1-720p-rpk_candidate_1");
@@ -471,7 +471,7 @@ public class CandidateMediaDetailTest_02  {
 		Assert.assertEquals("NFO Year", new Integer(2010), candidate_2_nfo.getYear());
 		Assert.assertNull("NFO Thumb", candidate_2_nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.TV_SHOW, candidate_2_nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\1-3-3-8 com twiz-hp7part1-720p-rpk\\1-3-3-8 com twiz-hp7part1-720p-rpk.mkv", candidate_2_nfo.getMovie().getFilenameandpath() );		
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk" + File.separator + "1-3-3-8 com twiz-hp7part1-720p-rpk.mkv", candidate_2_nfo.getMovie().getFilenameandpath() );		
 		
 		//candidate folder
 		File candidate_2_folder = new File(testMediaFolder, "1-3-3-8 com twiz-hp7part1-720p-rpk/1-3-3-8_com_twiz-hp7part1-720p-rpk_candidate_2");
@@ -527,9 +527,9 @@ public class CandidateMediaDetailTest_02  {
 		MovieFileNFO nfo = (MovieFileNFO)mediaFileDefinition.getMediaNFO();
 		Assert.assertEquals("Title", "Harry Potter and The Deathly Hallows - Part 1", nfo.getTitle() );
 		Assert.assertEquals("NFO Year", new Integer(2011), nfo.getYear());
-		Assert.assertEquals("NFO Thumb", testMediaFolder.getPath() + "\\Harry Potter and The Deathly Hallows - Part 1 (2011)\\cover.jpg", nfo.getThumb());
+		Assert.assertEquals("NFO Thumb", testMediaFolder.getPath() + File.separator + "Harry Potter and The Deathly Hallows - Part 1 (2011)" + File.separator + "cover.jpg", nfo.getThumb());
 		Assert.assertEquals("NFO Media Type", MediaType.MOVIE, nfo.getMediaType() );
-		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + "\\Harry Potter and The Deathly Hallows - Part 1 (2011)\\Harry Potter and The Deathly Hallows - Part 1 (2011).mkv", nfo.getFilenameAndPath());		
+		Assert.assertEquals("NFO FilenameAndPath", testMediaFolder.getPath() + File.separator + "Harry Potter and The Deathly Hallows - Part 1 (2011)" + File.separator + "Harry Potter and The Deathly Hallows - Part 1 (2011).mkv", nfo.getFilenameAndPath());		
 		
 		Assert.assertEquals("NFO Rating", "8.5", nfo.getRating());
 		Assert.assertEquals("NFO Outline", "Great movie...", nfo.getOutline());

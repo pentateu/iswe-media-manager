@@ -6,13 +6,20 @@
  
  	- Ability to search and scrap media info
  	
- 	- Ability to check wheather a movie exists in the local library or not before downloading 
+ 	- Ability to check whether a movie exists in the local library or not before downloading 
 
+
+ - MediaDetailTabPanel :
+    - Display the full file name.. trim the folder name if it is too big and provide a button to see it complete if it is trimed.
+ - Display in the MediaDetailPanel :
+    - Display if the Media is in a exclusive folder and if not display a button to move to a exclusive folder.
+    - Display Poster and NFO file details.
+    - Date last scrap
 
 ## Scraping
 
  - Create Unit testing for:
-	- scenario when the file name is useless, but the folder name is usefull to use during the scraping. 
+	- scenario when the file name is useless, but the folder name is useful to use during the scraping. 
 	  The Elephant.White.2011.720p.BluRay.x264-Japhson is a good example.
 	  
 	  
@@ -32,3 +39,5 @@
 	
 
  - Implement a XML configuration file for the application
+
+ 

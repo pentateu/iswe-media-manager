@@ -16,6 +16,7 @@ import nz.co.iswe.mediamanager.media.file.MediaFileException;
 import nz.co.iswe.mediamanager.scraper.MediaType;
 import nz.co.iswe.mediamanager.scraper.ScraperContext;
 import nz.co.iswe.mediamanager.scraper.SearchResult;
+import nz.co.iswe.mediamanager.text.NormalizerFactory;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -37,17 +38,6 @@ public class OneDDLScraper extends AbstractScraper {
 	private String [] matchFileNamePatterns = { //OneDDL common file name structures
 			"OneDDL[\\.]com.{2,}",
 			"1-3-3-8[\\.]com.{2,}"};
-	
-	//Patterns used to clean-up the file names by removing 
-	//all the text sequences that does not make up the name of the movie
-	private String [] cleanUpFileNamePatterns = {
-			"OneDDL[\\.]com[-|_|.]",
-			"1-3-3-8[\\.]com[-|_|.]",
-			"720p",
-			"BluRay",
-			"x264",
-			"NODLABS",
-			"'"};
 	
 	
 	//Example: of Post titles
@@ -87,11 +77,7 @@ public class OneDDLScraper extends AbstractScraper {
 			"TWiZTED",
 			"REFiNED"};
 	
-	//Patterns used to clean-up the file names by removing non desirable chars
-	private char [] replaceWithSpaceFileNamePatterns = {
-			'-',
-			'.',
-			'_'};
+	
 	 
 	private List<SearchResult> candidatePosts = new ArrayList<SearchResult>();
 	
@@ -150,7 +136,7 @@ public class OneDDLScraper extends AbstractScraper {
 		if(searchResult == null){
 		
 			//2: try to remove the filename prefix
-			String movieName = removeFileNamePrefix(mediaName);
+			String movieName = NormalizerFactory.getInstance().getFileNameNormalizer().cleanUp(mediaName);
 			query = buildQuery(movieName);
 			searchResult = search(query, movieName, false);
 		}
@@ -159,7 +145,7 @@ public class OneDDLScraper extends AbstractScraper {
 		
 		if(searchResult == null){
 			//3: try the movie name normalised and the post titles also normalized
-			String movieName = normalizeMovieName(mediaName);
+			String movieName = NormalizerFactory.getInstance().getFileNameNormalizer().normalize(mediaName);
 			query = buildQuery(movieName);
 			searchResult = search(query, movieName, true);
 			
@@ -301,13 +287,7 @@ public class OneDDLScraper extends AbstractScraper {
 		
 	}
 
-	private String removeFileNamePrefix(String fileName) {
-		//remove the text sequences
-		for(String pattern: cleanUpFileNamePatterns){
-			fileName = fileName.replaceAll(pattern, "");
-		}
-		return fileName;
-	}
+	
 
 	private SearchResult search(String query, String titleToCompare, boolean normalizePostTitle) {
 		
@@ -405,10 +385,7 @@ public class OneDDLScraper extends AbstractScraper {
 			postTitle = postTitle.replaceAll(pattern, "");
 		}
 		
-		//remove the individual characters with space
-		for(char charItem: replaceWithSpaceFileNamePatterns){
-			postTitle = postTitle.replace(charItem, ' ');
-		}
+		postTitle = NormalizerFactory.getInstance().getFileNameNormalizer().replaceWithSpace(postTitle);
 		
 		return postTitle;
 	}
@@ -417,20 +394,7 @@ public class OneDDLScraper extends AbstractScraper {
 		return movieName.trim().replace(' ', '+');
 	}
 
-	private String normalizeMovieName(String fileName) {
-		//remove the text sequences
-		for(String pattern: cleanUpFileNamePatterns){
-			fileName = fileName.replaceAll(pattern, "");
-		}
-		
-		
-		//remove the individual characters with space
-		for(char charItem: replaceWithSpaceFileNamePatterns){
-			fileName = fileName.replace(charItem, ' ');
-		}
-		
-		return fileName;
-	}
+	
 
 	@Override
 	public boolean preferedScraperFor(IMediaDetail mediaDefinition) {
