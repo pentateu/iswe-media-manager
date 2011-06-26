@@ -4,9 +4,9 @@
 
  - Start working on the browser component !
  
- 	- Ability to search and scrap media info
+ 	- Ability to search and scrap media info - 50%
  	
- 	- Ability to check whether a movie exists in the local library or not before downloading 
+ 	- Ability to check whether a movie exists in the local library or not before download
 
 
  - MediaDetailTabPanel :
@@ -17,6 +17,8 @@
     - Date last scrap
 
 ## Scraping
+
+ - Create Unit testing for IMDB and finish with the scraping implementation
 
  - Create Unit testing for:
 	- scenario when the file name is useless, but the folder name is useful to use during the scraping. 
@@ -34,9 +36,7 @@
 
 ## General improvements
 
- - Improve the isInExclusiveFolder implementation.
-	- Elephant White for example is not recogniing that it has its own folder
-	
+ - Improve the XBMC Movie Schema.. nodes like genre has its own type when it should be string and Integer nodes are BidDecimal in java..
 
  - Implement a XML configuration file for the application
 

@@ -76,7 +76,7 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		this.multiPart = metadata.isMultPart();
 	}
 
-	protected MediaDetail(MediaFolder mediaFolder) {
+	MediaDetail(MediaFolder mediaFolder) {
 		super(mediaFolder);
 	}
 

@@ -32,13 +32,13 @@ public abstract class AbstractScraper implements IScraper {
 	// TODO: [CONFIG]  -> Should be a configuration and not fixed
 	protected boolean preLoadCandidates = true;
 
-	protected IMediaDetail mediaDefinition;
+	protected IMediaDetail mediaDetail;
 
 	protected IScrapingStatusObserver observer;
 
 	@Override
-	public void setMediaDefinition(IMediaDetail mediaDefinition) {
-		this.mediaDefinition = mediaDefinition;
+	public void setMediaDefinition(IMediaDetail mediaDetail) {
+		this.mediaDetail = mediaDetail;
 	}
 
 	@Override

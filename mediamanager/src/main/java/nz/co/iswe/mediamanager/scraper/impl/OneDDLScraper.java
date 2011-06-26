@@ -89,11 +89,11 @@ public class OneDDLScraper extends AbstractScraper {
 		if(searchResult != null){
 			log.fine("Search succesfull! url: " + searchResult.getURL());
 			//get the detailed information about the media
-			mediaDefinition.setMediaType(searchResult.getMediaType());
-			mediaDefinition.setBlogPostURL(searchResult.getURL());
+			mediaDetail.setMediaType(searchResult.getMediaType());
+			mediaDetail.setBlogPostURL(searchResult.getURL());
 			
 			try {
-				scrapeMediaDetails(mediaDefinition, searchResult);
+				scrapeMediaDetails(mediaDetail, searchResult);
 			} catch (MediaFileException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -104,15 +104,15 @@ public class OneDDLScraper extends AbstractScraper {
 			//check if any candidates has been found
 			if(candidatePosts.size() > 0){
 				//save the candidates for the user to review
-				mediaDefinition.setStatus(MediaStatus.CANDIDATE_LIST_FOUND);
+				mediaDetail.setStatus(MediaStatus.CANDIDATE_LIST_FOUND);
 				
 				if(preLoadCandidates){
 					//scrap the candidate details
 					scrapCandidates();
-					mediaDefinition.setStatus(MediaStatus.CANDIDATE_DETAILS_FOUND);
+					mediaDetail.setStatus(MediaStatus.CANDIDATE_DETAILS_FOUND);
 				}
 				else{
-					mediaDefinition.setCandidateUrls(candidatePosts);
+					mediaDetail.setCandidateUrls(candidatePosts);
 				}
 				
 				observer.notifyStepProgress();
@@ -123,13 +123,13 @@ public class OneDDLScraper extends AbstractScraper {
 
 	public SearchResult search() {
 		//get the movie name
-		String mediaName = mediaDefinition.getTitle();
+		String mediaName = mediaDetail.getTitle();
 		
 		log.fine("Search for media : " + mediaName);
 		
 		//1: try a first an exact search using the filename
 		String query = Util.buildURLQuery(mediaName);
-		SearchResult searchResult = search(query, mediaDefinition.getTitle(), false);
+		SearchResult searchResult = search(query, mediaDetail.getTitle(), false);
 		
 		observer.notifyStepProgress();
 		
@@ -166,12 +166,12 @@ public class OneDDLScraper extends AbstractScraper {
 		for(SearchResult searchResult : candidatePosts){
 			try{
 				//create media definition
-				CandidateMediaDetail candidateMediaDefinition = new CandidateMediaDetail(mediaDefinition);
+				CandidateMediaDetail candidateMediaDefinition = new CandidateMediaDetail(mediaDetail);
 				candidateMediaDefinition.setMediaType(searchResult.getMediaType());
 				scrapeMediaDetails(candidateMediaDefinition, searchResult);
 				candidateMediaDefinition.setStatus(MediaStatus.MEDIA_DETAILS_FOUND);
 				
-				mediaDefinition.addCandidate(candidateMediaDefinition);
+				mediaDetail.addCandidate(candidateMediaDefinition);
 			}
 			catch(MediaFileException e){
 				e.printStackTrace();
@@ -181,7 +181,7 @@ public class OneDDLScraper extends AbstractScraper {
 
 	public void scrape(SearchResult searchResult) {
 		try {
-			scrapeMediaDetails(mediaDefinition, searchResult);
+			scrapeMediaDetails(mediaDetail, searchResult);
 		} catch (MediaFileException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

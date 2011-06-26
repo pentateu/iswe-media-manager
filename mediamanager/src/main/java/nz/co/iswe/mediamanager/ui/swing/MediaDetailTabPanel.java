@@ -84,8 +84,8 @@ public class MediaDetailTabPanel extends JPanel {
 		//2 : try the IMDB
 		if(null == null && mediaDetail.getMediaNFO() != null ){
 			MovieFileNFO movieFileNFO = (MovieFileNFO)mediaDetail.getMediaNFO();
-			if(movieFileNFO.getImdbId() != null){
-				url = Util.getImdbTitleURL(movieFileNFO.getImdbId());
+			if(movieFileNFO.getId() != null){
+				url = Util.getImdbTitleURL(movieFileNFO.getId());
 			}
 			else{
 				url = Util.getImdbSearchByTitleURL(mediaDetail.getTitle());

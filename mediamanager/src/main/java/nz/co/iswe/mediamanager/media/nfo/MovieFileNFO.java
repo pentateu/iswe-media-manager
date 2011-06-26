@@ -21,6 +21,37 @@ public class MovieFileNFO extends AbstractFileNFO  {
 		super(file);
 		this.movie = movie;
 	}
+	
+	protected StringBuffer buildToStringDescription(){
+		StringBuffer strDescription = new StringBuffer("[MovieFileNFO ");
+		
+		strDescription.append("Title: ").append(movie.getTitle());
+		
+		strDescription.append(" Rating: " + movie.getRating());
+		
+		
+		strDescription.append(" ID: " + movie.getId());
+		
+		
+		strDescription.append(" Year: " + movie.getYear());
+		
+		strDescription.append("\nFilenameandpath: " + movie.getFilenameandpath());
+		
+		strDescription.append("\nOutline: " + movie.getOutline());
+		
+		
+		return strDescription;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer strDescription = buildToStringDescription();
+		
+		//finish the string description construction
+		strDescription.append("]");
+		
+		return strDescription.toString();
+	}	
 
 	@Override
 	public void setRating(String rating) {
@@ -52,8 +83,13 @@ public class MovieFileNFO extends AbstractFileNFO  {
 
 	@Override
 	public void setYear(Integer year) {
+		if(year == null){
+			return;
+		}
 		movie.setYear(new BigInteger(year.toString()));
 	}
+	
+	
 
 	@Override
 	public void setThumb(String path) {
@@ -87,9 +123,27 @@ public class MovieFileNFO extends AbstractFileNFO  {
 	public String getThumb() {
 		return movie.getThumb();
 	}
+
+	public void setOriginalTitle(String title) {
+		movie.setOriginaltitle(title);
+	}
 	
-	public String getImdbId() {
-		return movie.getId();
+	public void setSortTitle(String title) {
+		movie.setSorttitle(title);
+	}
+	
+	public void setVotes(Integer value) {
+		if(value == null){
+			return;
+		}
+		movie.setVotes(new BigInteger(value.toString()));
+	}
+	
+	public void setTop250(Integer value) {
+		if(value == null){
+			return;
+		}
+		movie.setTop250(new BigInteger(value.toString()));
 	}
 	
 	@Override
@@ -100,35 +154,48 @@ public class MovieFileNFO extends AbstractFileNFO  {
 		return null;
 	}
 	
-	protected StringBuffer buildToStringDescription(){
-		StringBuffer strDescription = new StringBuffer("[MovieFileNFO ");
-		
-		strDescription.append("Title: ").append(movie.getTitle());
-		
-		strDescription.append(" Rating: " + movie.getRating());
-		
-		
-		strDescription.append(" ID: " + movie.getId());
-		
-		
-		strDescription.append(" Year: " + movie.getYear());
-		
-		strDescription.append("\nFilenameandpath: " + movie.getFilenameandpath());
-		
-		strDescription.append("\nOutline: " + movie.getOutline());
-		
-		
-		return strDescription;
+	public void setPlot(String plot) {
+		movie.setPlot(plot);
 	}
 	
-	@Override
-	public String toString() {
-		StringBuffer strDescription = buildToStringDescription();
-		
-		//finish the string description construction
-		strDescription.append("]");
-		
-		return strDescription.toString();
+	public void setRuntime(String value) {
+		movie.setRuntime(value);
+	}
+	public String getRuntime(){
+		return movie.getRuntime();
+	}
+	
+	public String getOriginalTitle() {
+		return movie.getOriginaltitle();
+	}
+
+	public String getSortTitle() {
+		return movie.getSorttitle();
+	}
+
+	public Integer getTop250() {
+		if(movie.getTop250() == null){
+			return null;
+		}
+		return movie.getTop250().intValue();
+	}
+
+	public Integer getVotes() {
+		if(movie.getVotes() == null){
+			return null;
+		}
+		return movie.getVotes().intValue();
+	}
+
+	public String getPlot() {
+		return movie.getPlot();
+	}
+
+	public void setId(String id) {
+		movie.setId(id);
+	}	
+	public String getId(){
+		return movie.getId();
 	}
 
 	

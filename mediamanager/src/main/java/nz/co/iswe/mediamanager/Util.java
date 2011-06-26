@@ -261,6 +261,15 @@ public class Util {
 		return text.trim().replace(' ', '+');
 	}
 
+	public static String trim(String text) {
+		//trim special characters at the end of the string.
+		text = StringUtils.trimToEmpty(text); 
+		char c = 160;
+		text = text.replaceAll(String.valueOf( c ), "");
+		text = StringUtils.trimToEmpty(text); 
+		return text;
+	}
+
 	/**
 	 * Normalize the text 
 	 * @param text

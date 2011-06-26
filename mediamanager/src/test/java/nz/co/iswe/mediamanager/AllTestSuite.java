@@ -4,6 +4,7 @@ import nz.co.iswe.mediamanager.media.file.CandidateMediaDetailTest;
 import nz.co.iswe.mediamanager.media.file.CandidateMediaDetailTest_02;
 import nz.co.iswe.mediamanager.media.file.MediaDetailTest;
 import nz.co.iswe.mediamanager.media.subtitles.SubtitleContextTest;
+import nz.co.iswe.mediamanager.scraper.impl.IMDBMovieScraperTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -14,7 +15,8 @@ import org.junit.runners.Suite;
 	MediaDetailTest.class,
 	CandidateMediaDetailTest.class,
 	CandidateMediaDetailTest_02.class,
-	SubtitleContextTest.class
+	SubtitleContextTest.class,
+	IMDBMovieScraperTest.class
 })
 public class AllTestSuite {
 

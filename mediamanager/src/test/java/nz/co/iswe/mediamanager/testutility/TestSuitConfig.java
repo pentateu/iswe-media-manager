@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 
 public class TestSuitConfig {
 
+	private static final String TEST_IMDB_SAMPLES_FOLDER = "test.imdb.samples.folder";
 	private static final String TEST_MEDIA_SWING_TEST_FOLDER = "test.media.swing.test.folder";
 	private static final String TEST_MEDIA_TEMPLATE_FOLDER = "test.media.template.folder";
 	private static final String TEST_MEDIA_JUNIT_FOLDER = "test.media.junit.folder";
@@ -79,6 +80,16 @@ public class TestSuitConfig {
 		
 		//2 copy the template folder and all its contents
 		FileUtils.copyDirectory(template, folder);
+	}
+
+	public static File getIMDBSamplesFolder() {
+		File folder = new File(getTestProperties().getProperty(TEST_IMDB_SAMPLES_FOLDER));
+		
+		if(! folder.exists() || ! folder.isDirectory()){
+			throw new RuntimeException("Invalid Property: " + TEST_IMDB_SAMPLES_FOLDER + ".\n Check the test_suite.propeties file!");
+		}
+		
+		return folder;
 	}
 
 	
