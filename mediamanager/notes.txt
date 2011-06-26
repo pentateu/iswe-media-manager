@@ -4,7 +4,7 @@
 
  - Start working on the browser component !
  
- 	- Ability to search and scrap media info - 50%
+ 	- Basic ability to search and scrap media info - 100%
  	
  	- Ability to check whether a movie exists in the local library or not before download
 
