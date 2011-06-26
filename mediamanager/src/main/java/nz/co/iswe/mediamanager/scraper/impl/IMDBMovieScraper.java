@@ -160,7 +160,8 @@ public class IMDBMovieScraper extends AbstractScraper {
 		
 		try {
 			if(mediaDetail.getMediaType() == null){
-				mediaDetail.setMediaType(MediaType.MOVIE);//TODO: IMplement the check for media type!
+				//TODO: IMplement the check for media type! .. use the genre for that
+				mediaDetail.setMediaType(MediaType.MOVIE);
 			}
 			//validate MediaFile
 			mediaDetail.ensureNFOExists();
