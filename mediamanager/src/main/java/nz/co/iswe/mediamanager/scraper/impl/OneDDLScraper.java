@@ -128,7 +128,7 @@ public class OneDDLScraper extends AbstractScraper {
 		log.fine("Search for media : " + mediaName);
 		
 		//1: try a first an exact search using the filename
-		String query = buildQuery(mediaName);
+		String query = Util.buildURLQuery(mediaName);
 		SearchResult searchResult = search(query, mediaDefinition.getTitle(), false);
 		
 		observer.notifyStepProgress();
@@ -137,7 +137,7 @@ public class OneDDLScraper extends AbstractScraper {
 		
 			//2: try to remove the filename prefix
 			String movieName = NormalizerFactory.getInstance().getFileNameNormalizer().cleanUp(mediaName);
-			query = buildQuery(movieName);
+			query = Util.buildURLQuery(movieName);
 			searchResult = search(query, movieName, false);
 		}
 		
@@ -146,9 +146,8 @@ public class OneDDLScraper extends AbstractScraper {
 		if(searchResult == null){
 			//3: try the movie name normalised and the post titles also normalized
 			String movieName = NormalizerFactory.getInstance().getFileNameNormalizer().normalize(mediaName);
-			query = buildQuery(movieName);
+			query = Util.buildURLQuery(movieName);
 			searchResult = search(query, movieName, true);
-			
 		}
 		
 		observer.notifyStepProgress();
@@ -390,9 +389,7 @@ public class OneDDLScraper extends AbstractScraper {
 		return postTitle;
 	}
 
-	private String buildQuery(String movieName) {
-		return movieName.trim().replace(' ', '+');
-	}
+	
 
 	
 

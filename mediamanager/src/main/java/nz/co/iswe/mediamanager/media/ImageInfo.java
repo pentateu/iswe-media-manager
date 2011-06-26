@@ -72,7 +72,10 @@ public class ImageInfo implements MediaFolderChangeListener {
 		if(file != null){
 			//get the reference to the file in the new folder
 			File newFile = new File(mediaFolder.getFile(), file.getName());
-			if( ! file.exists() &&  newFile.exists() ){
+			if(file.getPath().equals(newFile.getPath())){
+				//nothing changed
+			}
+			else if( ! file.exists() &&  newFile.exists() ){
 				validateImageFile(newFile);
 				file = newFile;
 			}

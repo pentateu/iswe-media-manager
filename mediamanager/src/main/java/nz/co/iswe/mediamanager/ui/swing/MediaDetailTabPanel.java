@@ -9,9 +9,11 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import net.miginfocom.swing.MigLayout;
+import nz.co.iswe.mediamanager.Util;
 import nz.co.iswe.mediamanager.media.MediaStatus;
 import nz.co.iswe.mediamanager.media.file.CandidateMediaDetail;
 import nz.co.iswe.mediamanager.media.file.MediaDetail;
+import nz.co.iswe.mediamanager.media.nfo.MovieFileNFO;
 
 public class MediaDetailTabPanel extends JPanel {
 	/**
@@ -54,36 +56,75 @@ public class MediaDetailTabPanel extends JPanel {
 		tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
 		add(tabbedPane, BorderLayout.CENTER);
 		
+		
 	}
 
 	private MediaDetail mediaFileDefinitionBeingDisplayed;
 	
-	public void showMediaDefinition(final MediaDetail mediaFileDefinition) {
+	/**
+	 * Open a browser tab for the current media file
+	 * @param mediaDetail 
+	 */
+	protected void showBrowserTab(MediaDetail mediaDetail) {
+		BrowserPanel browserPanel = new BrowserPanel();
 		
-		if(mediaFileDefinitionBeingDisplayed != null && mediaFileDefinitionBeingDisplayed == mediaFileDefinition){
+		//browser not yet in the tabs
+		tabbedPane.addTab("Browser", null, browserPanel, null);
+		tabbedPane.setSelectedComponent(browserPanel);
+		
+		String url = null;
+		
+		//get the browser URL
+		
+		//1: Try the Blog post
+		if(null == null && mediaDetail.getBlogPostURL() != null ){
+			url = mediaDetail.getBlogPostURL();
+		}
+		
+		//2 : try the IMDB
+		if(null == null && mediaDetail.getMediaNFO() != null ){
+			MovieFileNFO movieFileNFO = (MovieFileNFO)mediaDetail.getMediaNFO();
+			if(movieFileNFO.getImdbId() != null){
+				url = Util.getImdbTitleURL(movieFileNFO.getImdbId());
+			}
+			else{
+				url = Util.getImdbSearchByTitleURL(mediaDetail.getTitle());
+			}
+		}
+		browserPanel.navigateTo(url);
+	}
+	
+	public void showMediaDefinition(final MediaDetail mediaDetail) {
+		
+		if(mediaFileDefinitionBeingDisplayed != null && mediaFileDefinitionBeingDisplayed == mediaDetail){
 			//void doing it twice
 			return;
 		}
 		
-		mediaFileDefinitionBeingDisplayed = mediaFileDefinition;
+		mediaFileDefinitionBeingDisplayed = mediaDetail;
 		
 		clear();
 		
 		//populate
-		filenameValueLabel.setText(mediaFileDefinition.getFileName());
+		filenameValueLabel.setText(mediaDetail.getFileName());
 		
 		//status
-		if(MediaStatus.CANDIDATE_DETAILS_FOUND.equals(mediaFileDefinition.getStatus())){
+		if(MediaStatus.CANDIDATE_DETAILS_FOUND.equals(mediaDetail.getStatus())){
 			statusValueLabel.setText( "Candidate results found. Select a candidate below to review!" );
 			
 			int idx = 1;
-			for(CandidateMediaDetail candidateMediaDefinition : mediaFileDefinition.getCandidates()){
+			for(CandidateMediaDetail candidateMediaDefinition : mediaDetail.getCandidates()){
 				MediaDetailPanel mediaDetailPanel = new MediaDetailPanel();
 				mediaDetailPanel.setListener(new MediaDetailPanelListener() {
 					@Override
 					public void notifyCandidateConfirmed() {
 						mediaFileDefinitionBeingDisplayed = null;
-						showMediaDefinition(mediaFileDefinition);
+						showMediaDefinition(mediaDetail);
+					}
+					
+					@Override
+					public void showBrowser(MediaDetail mediaDetail) {
+						showBrowserTab(mediaDetail);
 					}
 				});
 				mediaDetailPanel.showMediaDefinition(candidateMediaDefinition);
@@ -92,24 +133,36 @@ public class MediaDetailTabPanel extends JPanel {
 			}
 			
 		}
-		else if(MediaStatus.CANDIDATE_LIST_FOUND.equals(mediaFileDefinition.getStatus())){
+		else if(MediaStatus.CANDIDATE_LIST_FOUND.equals(mediaDetail.getStatus())){
 			statusValueLabel.setText( "Candidate URLs found. Click on candidated tab below to review!" );
 			
 			
 		}
-		else if(MediaStatus.MEDIA_DETAILS_FOUND.equals(mediaFileDefinition.getStatus())){
+		else if(MediaStatus.MEDIA_DETAILS_FOUND.equals(mediaDetail.getStatus())){
 			statusValueLabel.setText( "Media Details Found" );
 			
 			//add the media details tab
 			MediaDetailPanel mediaDetailPanel = new MediaDetailPanel();
-			mediaDetailPanel.showMediaDefinition(mediaFileDefinition);
+			mediaDetailPanel.setListener(new MediaDetailPanelListener() {
+				@Override
+				public void notifyCandidateConfirmed() {
+					//do nothing
+				}
+				
+				@Override
+				public void showBrowser(MediaDetail mediaDetail) {
+					showBrowserTab(mediaDetail);
+				}
+			});
+			mediaDetailPanel.showMediaDefinition(mediaDetail);
 			tabbedPane.addTab("Media Details", null, mediaDetailPanel, null);
 			
 			//add the browser tab
 			
 		}
-		else if(MediaStatus.MEDIA_DETAILS_NOT_FOUND.equals(mediaFileDefinition.getStatus())){
+		else if(MediaStatus.MEDIA_DETAILS_NOT_FOUND.equals(mediaDetail.getStatus())){
 			statusValueLabel.setText( "NO Details Found" );
+			showBrowserTab(mediaDetail);
 		}
 		else {
 			statusValueLabel.setText( "New! Click on the scrap button above to get the media details" );

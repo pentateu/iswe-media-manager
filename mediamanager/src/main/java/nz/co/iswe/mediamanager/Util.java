@@ -248,6 +248,19 @@ public class Util {
 		}
 	}
 
+	//TODO: Create the Dictionary classes under the text package.. and create a IMDB Dictionary class to manage all IMDB text, url and etc
+	public static String getImdbTitleURL(String imdbId) {
+		return "http://www.imdb.com/title/" + imdbId;
+	}
+
+	public static String getImdbSearchByTitleURL(String title) {
+		return "http://www.imdb.com/find?s=all&q=" + buildURLQuery(title) ;
+	}
+
+	public static String buildURLQuery(String text) {
+		return text.trim().replace(' ', '+');
+	}
+
 	/**
 	 * Normalize the text 
 	 * @param text

@@ -34,10 +34,11 @@ public class MediaDetailPanel extends JPanel {
 	private ImagePanel imagePanel;
 	private JButton actionButton;
 	
-	private MediaDetail mediaFileDefinition;
+	private MediaDetail mediaDetail;
 	private JLabel typeValueLabel;
 
 	private MediaDetailPanelListener listener;
+	private JLabel lblNewLabel_2;
 	
 	/**
 	 * Create the panel.
@@ -57,10 +58,10 @@ public class MediaDetailPanel extends JPanel {
 		imageContainer.add(imagePanel, BorderLayout.CENTER);
 		imagePanel.setLayout(null);
 		
-		actionButton = new JButton("Wrong Info :-(   Scrape Again");
+		actionButton = new JButton("Scrape Again");
 		actionButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				performAction();
+				scrapAgain();
 			}
 		});
 		
@@ -87,14 +88,33 @@ public class MediaDetailPanel extends JPanel {
 		yearValueLabel = new JLabel("[Year]");
 		yearValueLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
 		add(yearValueLabel, "cell 3 2");
-		add(actionButton, "cell 3 6,alignx right");
+		
+		lblNewLabel_2 = new JLabel("Wrong Info ?");
+		lblNewLabel_2.setFont(new Font("Verdana", Font.BOLD, 14));
+		add(lblNewLabel_2, "cell 2 6");
+		add(actionButton, "flowx,cell 3 6,alignx right");
+		
+		JButton btnNewButton = new JButton("Open Browser");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				openBrowser();
+			}
+		});
+		add(btnNewButton, "cell 3 6");
 
 	}
 
-	protected void performAction() {
-		if(isCandidate(mediaFileDefinition)){
+	protected void openBrowser() {
+		//
+		if(listener != null){
+			listener.showBrowser(mediaDetail);
+		}
+	}
+
+	protected void scrapAgain() {
+		if(isCandidate(mediaDetail)){
 			//candidate info is correct ;-)
-			CandidateMediaDetail candidateMediaDefinition = (CandidateMediaDetail)mediaFileDefinition;
+			CandidateMediaDetail candidateMediaDefinition = (CandidateMediaDetail)mediaDetail;
 			try {
 				candidateMediaDefinition.confirmCandidate();
 			} catch (MediaFileException e) {
@@ -113,7 +133,7 @@ public class MediaDetailPanel extends JPanel {
 	}
 
 	public void showMediaDefinition(MediaDetail mediaFileDefinition) {
-		this.mediaFileDefinition = mediaFileDefinition;
+		this.mediaDetail = mediaFileDefinition;
 		
 		fileNameValueLabel.setText(mediaFileDefinition.getTitle());
 		

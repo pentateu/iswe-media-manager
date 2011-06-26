@@ -6,12 +6,17 @@ import java.io.IOException;
 import nz.co.iswe.mediamanager.testutility.TestSuitConfig;
 import nz.co.iswe.mediamanager.ui.swing.JMainWindow;
 
+import org.eclipse.swt.SWT;
+
 public class PrepareSwingTesting {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		System.out.println("SWT.getVersion() : " + SWT.getVersion());
+		
 		try {
 			TestSuitConfig.createNewSwingTestMediaFolder();
 		} catch (IOException e) {

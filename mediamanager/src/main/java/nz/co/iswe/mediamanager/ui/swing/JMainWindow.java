@@ -17,12 +17,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import nz.co.iswe.mediamanager.media.MediaStatus;
 import nz.co.iswe.mediamanager.media.file.MediaDetail;
 import nz.co.iswe.mediamanager.media.file.MediaFileContext;
 import nz.co.iswe.mediamanager.media.file.MediaFileException;
 import nz.co.iswe.mediamanager.scraper.IScrapingStatusObserver;
+import chrriis.common.UIUtils;
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 
 public class JMainWindow {
 	private static final String MEDIA_FOLDER = "Media Folder";
@@ -48,12 +51,15 @@ public class JMainWindow {
 	};
 	
 	
-	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(final String[] args) {
-		EventQueue.invokeLater(new Runnable() {
+		UIUtils.setPreferredLookAndFeel();
+		//NativeSwing.initialize();
+		NativeInterface.open();
+		//EventQueue.invokeLater(new Runnable() {
+		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					//load the logging properties
@@ -74,6 +80,7 @@ public class JMainWindow {
 				}
 			}
 		});
+		NativeInterface.runEventPump();
 	}
 
 	/**
@@ -263,34 +270,50 @@ public class JMainWindow {
 
 			@Override
 			public void notifyScrapingFinished() {
-				mediaListPanel.refresh();
-				
-				mediaFolder.setEnabled(true);
-				browseButton.setEnabled(true);
-				scanNowButton.setEnabled(true);
-				scrapingButton.setEnabled(true);
-				
-				overralStatus.setValue(overralStatus.getMaximum());//complete the status bar
-				itemStatus.setVisible(false);
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						mediaListPanel.refresh();
+						
+						mediaFolder.setEnabled(true);
+						browseButton.setEnabled(true);
+						scanNowButton.setEnabled(true);
+						scrapingButton.setEnabled(true);
+						
+						overralStatus.setValue(overralStatus.getMaximum());//complete the status bar
+						itemStatus.setVisible(false);
+					}
+				});
 			}
 
 			@Override
 			public void notifyStepProgress() {
 				itemValue++;
-				itemStatus.setValue(itemValue);
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						itemStatus.setValue(itemValue);
+					}
+				});
 			}
 
 			@Override
 			public void notifyNewStep() {
 				itemValue = 1;
-				itemStatus.setValue(itemValue);
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						itemStatus.setValue(itemValue);
+					}
+				});
 			}
 
 			@Override
 			public void notifyStepFinished() {
-				itemStatus.setValue(itemStatus.getMaximum());
-				overralValue++;
-				overralStatus.setValue(overralValue);
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						itemStatus.setValue(itemStatus.getMaximum());
+						overralValue++;
+						overralStatus.setValue(overralValue);
+					}
+				});
 			}
 
 			@Override

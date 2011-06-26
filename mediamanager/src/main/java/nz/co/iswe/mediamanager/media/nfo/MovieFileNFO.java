@@ -88,6 +88,10 @@ public class MovieFileNFO extends AbstractFileNFO  {
 		return movie.getThumb();
 	}
 	
+	public String getImdbId() {
+		return movie.getId();
+	}
+	
 	@Override
 	public Integer getYear() {
 		if(movie.getYear() != null){
@@ -126,4 +130,6 @@ public class MovieFileNFO extends AbstractFileNFO  {
 		
 		return strDescription.toString();
 	}
+
+	
 }

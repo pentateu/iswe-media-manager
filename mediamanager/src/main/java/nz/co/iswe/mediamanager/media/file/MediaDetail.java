@@ -433,7 +433,10 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 	private void validateFolderChange(MediaFolder mediaFolder, String fileKey, File file) throws MediaFileException {
 		// get a reference to the file in the new folder and validate
 		File newFile = new File(mediaFolder.getFile(), file.getName());
-		if (!file.exists() && newFile.exists() && Util.isMediaValidFile(newFile)) {
+		if(file.getPath().equals(newFile.getPath())){
+			//no change to the file
+		}
+		else if (!file.exists() && newFile.exists() && Util.isMediaValidFile(newFile)) {
 			setFile(fileKey, newFile);
 		} else {
 			throw new MediaFileException(
@@ -764,8 +767,12 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 	}
 	
 	public void release() {
-		log.info("*** Releasesing MediaDetails: " + this);
+		log.info("*** Releasing MediaDetails: " + this);
 		super.release();
 		listeners.clear();
+	}
+
+	public String getBlogPostURL() {
+		return blogPostURL;
 	}
 }
