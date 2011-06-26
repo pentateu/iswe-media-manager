@@ -23,6 +23,7 @@ import nz.co.iswe.mediamanager.media.MediaStatus;
 import nz.co.iswe.mediamanager.media.file.MediaDetail;
 import nz.co.iswe.mediamanager.media.file.MediaFileContext;
 import nz.co.iswe.mediamanager.media.file.MediaFileException;
+import nz.co.iswe.mediamanager.scraper.IScraper;
 import nz.co.iswe.mediamanager.scraper.IScrapingStatusObserver;
 import chrriis.common.UIUtils;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
@@ -82,7 +83,13 @@ public class JMainWindow {
 		});
 		NativeInterface.runEventPump();
 	}
+	
+	public static JMainWindow getInstance(){
+		return instance;
+	}
 
+	private static JMainWindow instance;
+	
 	/**
 	 * Create the application.
 	 */
@@ -99,6 +106,7 @@ public class JMainWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		JMainWindow.instance = this;
 		frame = new JFrame();
 		BorderLayout borderLayout = (BorderLayout) frame.getContentPane().getLayout();
 		borderLayout.setVgap(5);
@@ -226,6 +234,12 @@ public class JMainWindow {
 		}
 	}
 
+	public void scrape(IScraper scraper, MediaDetail mediaDetail) {
+		IScrapingStatusObserver observer = setupStatusBarForScraping(2);
+		MediaFileContext mediaFileContext = MediaFileContext.getInstance();
+		mediaFileContext.scrap(observer, scraper, mediaDetail);
+	}
+
 	private void startScrap() {
 
 		if (mediaListPanel.getRowCount() == 0) {
@@ -233,20 +247,24 @@ public class JMainWindow {
 					JOptionPane.CLOSED_OPTION);
 			return;
 		}
+		
+		IScrapingStatusObserver observer = setupStatusBarForScraping(mediaListPanel.getRowCount() + 1);
+
+		MediaFileContext mediaFileContext = MediaFileContext.getInstance();
+		mediaFileContext.startScrap(observer);
+	}
+
+	private IScrapingStatusObserver setupStatusBarForScraping(int overralStatusBarSize) {
 
 		mediaFolder.setEnabled(false);
 		browseButton.setEnabled(false);
 		scanNowButton.setEnabled(false);
 		scrapingButton.setEnabled(false);
 		
-		
-		MediaFileContext mediaFileContext = MediaFileContext.getInstance();
-		
-		
 		//setup the progress Bars
 		final JProgressBar overralStatus = mediaListPanel.getOverralStatusBar();
 		overralStatus.setMinimum(1);
-		overralStatus.setMaximum(mediaListPanel.getRowCount() + 1);
+		overralStatus.setMaximum(overralStatusBarSize);
 		overralStatus.setValue(1);
 		
 		final JProgressBar itemStatus = mediaListPanel.getItemStatusBar();
@@ -322,9 +340,11 @@ public class JMainWindow {
 			}
 
 		};
-
-		
-		mediaFileContext.startScrap(observer);
+		return observer;
 	}
+
+	
+	
+	
 
 }

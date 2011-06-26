@@ -4,6 +4,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nz.co.iswe.mediamanager.Util;
 import nz.co.iswe.mediamanager.media.IMediaDetail;
@@ -11,6 +13,7 @@ import nz.co.iswe.mediamanager.media.ImageInfo;
 import nz.co.iswe.mediamanager.media.MediaStatus;
 import nz.co.iswe.mediamanager.media.file.MediaFileException;
 import nz.co.iswe.mediamanager.media.nfo.MovieFileNFO;
+import nz.co.iswe.mediamanager.scraper.MediaType;
 import nz.co.iswe.mediamanager.scraper.SearchResult;
 
 import org.jsoup.Jsoup;
@@ -21,19 +24,76 @@ public class IMDBMovieScraper extends AbstractScraper {
 
 	private static Logger log = Logger.getLogger(IMDBMovieScraper.class.getName());
 
-	private boolean skipDownloadPoster = false;
-
+	protected boolean skipDownloadPoster = false;
+	
+	protected Pattern imdbUrlPattern = Pattern.compile("(http://)?(.)?(" + Pattern.quote("imdb.com") + "|" + Pattern.quote("www.imdb.com") + "){1}(.+)");
+	
+	protected Pattern searchSubUrlPattern = Pattern.compile("^/find\\?s\\=\\w+\\&q\\=(.+)$");
+	
+	protected Pattern movieDetailSubUrlPattern = Pattern.compile("^/title/\\w{2}\\d+/$");
+	
+	
 	@Override
 	public void searchAndScrap() {
 		// Search a movie on iMDB
+		
+		if(urlToScrape != null){
+			//1: verify if this is search results page or a movie page
+			
+			//2: if it is a movie page -> scrap the content
+			if(isMovieDetaiScreenlURL(urlToScrape)){
+				scrape(urlToScrape);
+			}
+			
+		}
 
 		// TODO: Implement IMDBMovieScraper.searchAndScrap()
 
+	}
+	
+	protected boolean isMovieDetaiScreenlURL(String url){
+		Matcher matcher = imdbUrlPattern.matcher(url);
+		if(matcher.find()){
+			String parameters = matcher.group(4);
+			matcher = movieDetailSubUrlPattern.matcher(parameters);
+			if(matcher.matches()){
+				return true;
+			}
+			
+		}
+		return false;
+	}
+	
+	protected boolean isSearchScreenURL(String url){
+		Matcher matcher = imdbUrlPattern.matcher(url);
+		if(matcher.find()){
+			String parameters = matcher.group(4);
+			matcher = searchSubUrlPattern.matcher(parameters);
+			if(matcher.matches()){
+				return true;
+			}
+			
+		}
+		return false;
 	}
 
 	@Override
 	public boolean preferedScraperFor(IMediaDetail mediaDefinition) {
 		// Never the prefered scraper
+		return false;
+	}
+	
+	@Override
+	public boolean canScrapeURL(String url) {
+		Matcher matcher = imdbUrlPattern.matcher(url);
+		
+		if(matcher.find()){
+			String domain = matcher.group(3);
+			if("www.imdb.com".equals(domain) || "imdb.com".equals(domain)){
+				return true;
+			}
+		}
+		
 		return false;
 	}
 
@@ -80,6 +140,10 @@ public class IMDBMovieScraper extends AbstractScraper {
 	@Override
 	public void scrape(SearchResult searchResult) {
 		String url = searchResult.getURL();
+		scrape(url);
+	}
+
+	private void scrape(String url) {
 		try {
 			Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(5000).get();
 
@@ -87,7 +151,7 @@ public class IMDBMovieScraper extends AbstractScraper {
 
 		}
 		catch (IOException e) {
-			log.log(Level.WARNING, "Error fetching Media: " + mediaDetail + "  URL: " + searchResult.getURL(), e);
+			log.log(Level.WARNING, "Error fetching Media: " + mediaDetail + "  URL: " + url, e);
 			mediaDetail.setStatus(MediaStatus.ERROR);
 		}
 	}
@@ -95,6 +159,9 @@ public class IMDBMovieScraper extends AbstractScraper {
 	protected void scrapeDocument(Document doc, String url) {
 		
 		try {
+			if(mediaDetail.getMediaType() == null){
+				mediaDetail.setMediaType(MediaType.MOVIE);//TODO: IMplement the check for media type!
+			}
 			//validate MediaFile
 			mediaDetail.ensureNFOExists();
 			MovieFileNFO movieFileNFO = (MovieFileNFO)mediaDetail.getMediaNFO();
@@ -280,6 +347,7 @@ public class IMDBMovieScraper extends AbstractScraper {
 			
 			// TODO: .. more stuff to scrap form iMDB
 
+			mediaDetail.setStatus(MediaStatus.MEDIA_DETAILS_FOUND);
 			mediaDetail.save();
 		}
 		catch (MediaFileException e) {

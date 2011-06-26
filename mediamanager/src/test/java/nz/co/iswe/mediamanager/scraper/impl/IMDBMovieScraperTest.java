@@ -36,6 +36,40 @@ public class IMDBMovieScraperTest {
 	}
 
 	@Test
+	public void testIsMovieDetailScreenURL(){
+		IMDBMovieScraper scraper = new IMDBMovieScraper();
+		
+		Assert.assertTrue( scraper.isMovieDetaiScreenlURL("http://www.imdb.com/title/tt0120737/") );
+		
+		Assert.assertTrue( scraper.isMovieDetaiScreenlURL("http://www.imdb.com/title/tt1555149/") );
+
+		Assert.assertFalse( scraper.isMovieDetaiScreenlURL("http://www.imdb.com/title/tt1555149/taglines") );
+
+		Assert.assertFalse( scraper.isMovieDetaiScreenlURL("http://www.imdb.com/find?s=all&q=Elite+Squad") );
+
+	}
+	
+	@Test
+	public void testIsSearchScreenURL(){
+		IMDBMovieScraper scraper = new IMDBMovieScraper();
+		
+		Assert.assertTrue( scraper.isSearchScreenURL("http://www.imdb.com/find?s=all&q=Elite+Squad") );
+
+		Assert.assertTrue( scraper.isSearchScreenURL("http://www.imdb.com/find?s=all&q=The+Lord+of+the+Rings") );
+		
+		Assert.assertTrue( scraper.isSearchScreenURL("http://www.imdb.com/find?s=tt&q=Hangover") );
+		
+		Assert.assertFalse( scraper.isSearchScreenURL("http://www.imdb.com/title/tt0120737/") );
+		
+		Assert.assertFalse( scraper.isSearchScreenURL("http://www.imdb.com/title/tt1555149/") );
+
+		Assert.assertFalse( scraper.isSearchScreenURL("http://www.imdb.com/title/tt1555149/taglines") );
+
+		
+
+	}
+	
+	@Test
 	public void testScrapeDocument() throws IOException, MediaFileException {
 
 		// Setup

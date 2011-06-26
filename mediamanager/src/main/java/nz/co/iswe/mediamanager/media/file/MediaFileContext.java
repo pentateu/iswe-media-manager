@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import nz.co.iswe.mediamanager.media.IMediaDetail;
 import nz.co.iswe.mediamanager.media.MediaFileListener;
+import nz.co.iswe.mediamanager.scraper.IScraper;
 import nz.co.iswe.mediamanager.scraper.IScrapingStatusObserver;
 import nz.co.iswe.mediamanager.scraper.ScraperContext;
 
@@ -29,7 +30,7 @@ public class MediaFileContext {
 
 	private Map<String, MediaDetail> pathToMediaDetail = new HashMap<String, MediaDetail>();
 
-	private List<MediaDetail> scrapingQueuee = new ArrayList<MediaDetail>();
+	private List<ScrapingQueueItem> scrapingQueuee = new ArrayList<ScrapingQueueItem>();
 
 	private boolean stopScraping = false;
 
@@ -68,11 +69,18 @@ public class MediaFileContext {
 		pathToMediaDetail.put(mediaFileDefinition.getFileName(), mediaFileDefinition);
 	}
 
-	public MediaDetail addToScrapingQueue(MediaDetail mediaFileDefinition) {
-		if (!scrapingQueuee.contains(mediaFileDefinition)) {
-			scrapingQueuee.add(mediaFileDefinition);
+	public void addToScrapingQueue(MediaDetail mediaDetail, IScraper scraper) {
+		ScrapingQueueItem item = new ScrapingQueueItem(mediaDetail, scraper);
+		if (!scrapingQueuee.contains(item)) {
+			scrapingQueuee.add(item);
 		}
-		return mediaFileDefinition;
+	};
+	
+	public void addToScrapingQueue(MediaDetail mediaDetail) {
+		ScrapingQueueItem item = new ScrapingQueueItem(mediaDetail);
+		if (!scrapingQueuee.contains(item)) {
+			scrapingQueuee.add(item);
+		}
 	}
 
 	public Collection<MediaDetail> getAll() {
@@ -81,6 +89,50 @@ public class MediaFileContext {
 
 	private MediaDetail getFromPool(String fileName) {
 		return pathToMediaDetail.get(fileName);
+	}
+	
+	public void scrap(final IScrapingStatusObserver observer, final IScraper scraper, final MediaDetail mediaDetail) {
+		stopScraping = false;
+
+		if (observer == null || scraper == null || mediaDetail == null) {
+			log.warning("Invalid arguments! Exiting the method.");
+			return;
+		}
+		
+		final Thread scrapingThread = new Thread() {
+			public void run() {
+
+				observer.notifyScrapingStarted();
+				
+				ScraperContext scraperContext = ScraperContext.getInstance();
+				
+				// Notify a new file is being processed
+				observer.notifyNewStep();
+
+				long start = System.currentTimeMillis();
+					
+				try {
+					scraperContext.setScrapingStatusObserver(observer);
+
+					observer.notifyNewStep();
+					
+					log.fine(" ### START - Scraping ### Media Detail: " + mediaDetail);
+
+					scraperContext.scrape(mediaDetail, scraper);
+
+					long total = System.currentTimeMillis() - start;
+
+					log.fine(" ### END - Scraping ### Total time to scrape media. miliseconds: " + total + " Media File: " + mediaDetail);
+				} catch (Exception e) {
+					log.log(Level.SEVERE, "Error Scraping Media File: " + mediaDetail, e);
+					observer.notifyErrorOccurred("Error Scraping Media File: " + mediaDetail, e);
+				}
+				observer.notifyStepFinished();
+
+				observer.notifyScrapingFinished();
+			}
+		};
+		scrapingThread.start();
 	}
 
 	public void startScrap(final IScrapingStatusObserver observer) {
@@ -98,29 +150,30 @@ public class MediaFileContext {
 			public void run() {
 
 				observer.notifyScrapingStarted();
-
+				
 				ScraperContext scraperContext = ScraperContext.getInstance();
 				while (!stopScraping && scrapingQueuee.size() > 0) {
 					// Notify a new file is being processed
 					observer.notifyNewStep();
 
 					long start = System.currentTimeMillis();
-					MediaDetail mediaFileDefinition = scrapingQueuee.remove(0);
+					ScrapingQueueItem queueItem = scrapingQueuee.remove(0);
+					IScraper scraper = queueItem.getScraper();
+					MediaDetail mediaDetail = queueItem.getMediaDetail();
 
 					try {
 						scraperContext.setScrapingStatusObserver(observer);
 
-						log.fine(" ### START - Scraping ### Media File: " + mediaFileDefinition);
+						log.fine(" ### START - Scraping ### Media Detail: " + mediaDetail);
 
-						scraperContext.scrape(mediaFileDefinition);
+						scraperContext.scrape(mediaDetail, scraper);
 
 						long total = System.currentTimeMillis() - start;
 
-						log.fine(" ### END - Scraping ### Total time to scrape media. miliseconds: " + total
-								+ " Media File: " + mediaFileDefinition);
+						log.fine(" ### END - Scraping ### Total time to scrape media. miliseconds: " + total + " Media File: " + mediaDetail);
 					} catch (Exception e) {
-						log.log(Level.SEVERE, "Error Scraping Media File: " + mediaFileDefinition, e);
-
+						log.log(Level.SEVERE, "Error Scraping Media File: " + mediaDetail, e);
+						observer.notifyErrorOccurred("Error Scraping Media File: " + mediaDetail, e);
 					}
 					observer.notifyStepFinished();
 				}
@@ -137,6 +190,36 @@ public class MediaFileContext {
 		instance = null;
 	}
 
+	class ScrapingQueueItem {
+		MediaDetail mediaDetail;
+		IScraper scraper;
+		public ScrapingQueueItem(MediaDetail mediaDetail) {
+			this.mediaDetail = mediaDetail;
+		}
+		public ScrapingQueueItem(MediaDetail mediaDetail, IScraper scraper) {
+			this.mediaDetail = mediaDetail;
+			this.scraper = scraper;
+		}
+		public MediaDetail getMediaDetail() {
+			return mediaDetail;
+		}
+		public IScraper getScraper() {
+			return scraper;
+		}
+		@Override
+		public int hashCode() {
+			return mediaDetail.hashCode();
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if( ! (obj instanceof ScrapingQueueItem)){
+				return false;
+			}
+			ScrapingQueueItem other = (ScrapingQueueItem)obj;
+			return other.mediaDetail.equals(this.mediaDetail);
+		}
+	}
+	
 	class MediaFileListenerImpl implements MediaFileListener {
 
 		String fileName;
@@ -162,5 +245,9 @@ public class MediaFileContext {
 			// ignore
 		}
 
-	};
+	}
+
+	
+
+	
 }

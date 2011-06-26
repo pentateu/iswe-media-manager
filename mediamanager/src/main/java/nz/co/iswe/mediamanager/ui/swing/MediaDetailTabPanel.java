@@ -66,7 +66,7 @@ public class MediaDetailTabPanel extends JPanel {
 	 * @param mediaDetail 
 	 */
 	protected void showBrowserTab(MediaDetail mediaDetail) {
-		BrowserPanel browserPanel = new BrowserPanel();
+		BrowserPanel browserPanel = new BrowserPanel(mediaDetail);
 		
 		//browser not yet in the tabs
 		tabbedPane.addTab("Browser", null, browserPanel, null);
@@ -91,6 +91,10 @@ public class MediaDetailTabPanel extends JPanel {
 				url = Util.getImdbSearchByTitleURL(mediaDetail.getTitle());
 			}
 		}
+		else{
+			url = Util.getImdbSearchByTitleURL(mediaDetail.getTitle());
+		}
+		
 		browserPanel.navigateTo(url);
 	}
 	

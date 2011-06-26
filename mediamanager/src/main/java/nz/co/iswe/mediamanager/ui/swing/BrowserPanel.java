@@ -6,8 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import nz.co.iswe.mediamanager.media.file.MediaDetail;
+import nz.co.iswe.mediamanager.scraper.IScraper;
+import nz.co.iswe.mediamanager.scraper.ScraperContext;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserNavigationEvent;
 
@@ -17,9 +21,12 @@ public class BrowserPanel extends JPanel {
 	//private static Logger log = Logger.getLogger(BrowserPanel.class.getName());
 	
 	private JWebBrowser webBrowser;
+	private MediaDetail mediaDetail;
 	
-	public BrowserPanel() {
+	public BrowserPanel(MediaDetail mediaDetail) {
 		super(new BorderLayout());
+		
+		this.mediaDetail = mediaDetail;
 		
 		//JPanel webBrowserPanel = new JPanel(new BorderLayout());
 	    //webBrowserPanel.setBorder(BorderFactory.createTitledBorder("Native Web Browser component"));
@@ -43,7 +50,7 @@ public class BrowserPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				//Invoke the scraper for this site
-				
+				scrape();
 			}
 	    });
 	    
@@ -61,6 +68,20 @@ public class BrowserPanel extends JPanel {
 	    		
 	    	}
 	    });
+	}
+
+
+	protected void scrape() {
+		//Locate the right scraper component
+		String url = webBrowser.getResourceLocation();
+		IScraper scraper = ScraperContext.getInstance().getScraperByURL(url);
+		if(scraper == null){
+			//can scrape this page
+			JOptionPane.showMessageDialog(this, "You cannot scrape this page at the moment! There is not scraper component that support this page. Check the updates and try again.",
+					"Current page does not have a scraper!", JOptionPane.CLOSED_OPTION);
+		}
+		scraper.setURLToScrape(url);
+		JMainWindow.getInstance().scrape(scraper, mediaDetail);
 	}
 
 

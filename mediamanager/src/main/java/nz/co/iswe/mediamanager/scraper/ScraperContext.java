@@ -47,41 +47,37 @@ public class ScraperContext {
 		this.observer = observer;
 	}
 
-	public void scrape(MediaDetail mediaFileDefinition) {
-		//1: Locate the best scraper
-		IScraper scraper = getBestScraper(mediaFileDefinition);
-	
+	public void scrape(MediaDetail mediaDetail, IScraper scraper) {
+		
 		boolean found = false;
 		
 		if(scraper != null){
-			//scraper found
-			observer.notifyStepProgress();
-			
-			scraper.setMediaDefinition(mediaFileDefinition);
-			scraper.setScrapingStatusObserver(observer);
-			
-			//scrape the info for the provided media file
-			scraper.searchAndScrap();
-			
-			if(MediaStatus.MEDIA_DETAILS_FOUND.equals( mediaFileDefinition.getStatus()) ){
-				found = true;
+			found = scrapeImpl(mediaDetail, scraper);
+		}
+	
+		if(!found){
+			//2: Locate the best scraper
+			scraper = getBestScraper(mediaDetail);
+			if(scraper != null){
+				found = scrapeImpl(mediaDetail, scraper);
 			}
 		}
+		
 		if(!found){
-	
+
 			//No 'best scraper found'
 			//use the default scrapers
 			for(Class<? extends IScraper> scraperClass : defaultScrapers){
 				scraper = newInstance(scraperClass);
 				
 				observer.notifyStepProgress();
-				scraper.setMediaDefinition(mediaFileDefinition);
+				scraper.setMediaDefinition(mediaDetail);
 				scraper.setScrapingStatusObserver(observer);
 				
 				//scrape the info for the provided media file
 				scraper.searchAndScrap();
 				
-				if(MediaStatus.MEDIA_DETAILS_FOUND.equals( mediaFileDefinition.getStatus()) ){
+				if(MediaStatus.MEDIA_DETAILS_FOUND.equals( mediaDetail.getStatus()) ){
 					//if the media detail is found, stop from trying others scrapers
 					break;
 				}
@@ -90,18 +86,33 @@ public class ScraperContext {
 		}
 		
 		
-		if( ! ( MediaStatus.MEDIA_DETAILS_FOUND.equals( mediaFileDefinition.getStatus()) || 
-				MediaStatus.CANDIDATE_DETAILS_FOUND.equals( mediaFileDefinition.getStatus()) ||
-				MediaStatus.CANDIDATE_LIST_FOUND.equals( mediaFileDefinition.getStatus()) 
+		if( ! ( MediaStatus.MEDIA_DETAILS_FOUND.equals( mediaDetail.getStatus()) || 
+				MediaStatus.CANDIDATE_DETAILS_FOUND.equals( mediaDetail.getStatus()) ||
+				MediaStatus.CANDIDATE_LIST_FOUND.equals( mediaDetail.getStatus()) 
 			   ) ){
 			
-			mediaFileDefinition.setStatus(MediaStatus.MEDIA_DETAILS_NOT_FOUND);
+			mediaDetail.setStatus(MediaStatus.MEDIA_DETAILS_NOT_FOUND);
 		
 		}
 		
 		
 	}
 	
+	private boolean scrapeImpl(MediaDetail mediaDetail, IScraper scraper) {
+		observer.notifyStepProgress();
+		
+		scraper.setMediaDefinition(mediaDetail);
+		scraper.setScrapingStatusObserver(observer);
+		
+		//scrape the info for the provided media file
+		scraper.searchAndScrap();
+		
+		if(MediaStatus.MEDIA_DETAILS_FOUND.equals( mediaDetail.getStatus()) ){
+			return true;
+		}
+		return false;
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T extends IScraper> T getScraper(Class<T> clazz) {
 		if(clazz == null){
@@ -124,12 +135,21 @@ public class ScraperContext {
 		}
 		return null;
 	}
+	
+	public IScraper getScraperByURL(String url) {
+		for(Class<? extends IScraper> scraperClass : registeredScrapers){
+			IScraper scraper = newInstance(scraperClass);
+			if(scraper != null && scraper.canScrapeURL(url)){
+				return scraper;
+			}
+		}
+		return null;
+	}
 
 	private IScraper newInstance(Class<? extends IScraper> scraperClass) {
 		if(scraperClass == null){
 			return null;
 		}
-		//TODO: USe Spring to manage IoC
 		try {
 			return scraperClass.newInstance();
 		} catch (InstantiationException e) {
@@ -140,6 +160,8 @@ public class ScraperContext {
 			return null;
 		}
 	}
+
+	
 
 	
 

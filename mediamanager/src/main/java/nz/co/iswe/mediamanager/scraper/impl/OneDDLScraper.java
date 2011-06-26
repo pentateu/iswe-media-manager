@@ -389,9 +389,11 @@ public class OneDDLScraper extends AbstractScraper {
 		return postTitle;
 	}
 
-	
-
-	
+	@Override
+	public boolean canScrapeURL(String url) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	@Override
 	public boolean preferedScraperFor(IMediaDetail mediaDefinition) {

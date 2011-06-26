@@ -264,6 +264,7 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 
 		// 4 save the NFO file
 		saveNFO();
+		notifyChange();
 	}
 
 	public boolean isInExclusiveFolder() throws MediaFileException {

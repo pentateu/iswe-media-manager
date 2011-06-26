@@ -18,6 +18,10 @@ public interface IScraper {
 	
 	void setScrapingStatusObserver(IScrapingStatusObserver observer);
 
+	boolean canScrapeURL(String url);
+
+	void setURLToScrape(String url);
+
 	
 	
 }
