@@ -1,11 +1,11 @@
 package nz.co.iswe.mediamanager.media.nfo;
 
 import java.io.File;
-import java.math.BigInteger;
 
 import nz.co.iswe.mediamanager.media.file.MediaDetail;
 import nz.co.iswe.mediamanager.media.file.MediaFileException;
 import nz.co.iswe.mediamanager.media.nfo.xml.movie.Movie;
+import nz.co.iswe.mediamanager.media.nfo.xml.movie.ObjectFactory;
 import nz.co.iswe.mediamanager.scraper.MediaType;
 
 public class MovieFileNFO extends AbstractFileNFO  {
@@ -54,6 +54,23 @@ public class MovieFileNFO extends AbstractFileNFO  {
 	}	
 
 	@Override
+	public void setOriginalFileName(String originalFileName) {
+		if(movie.getMediaManager() == null){
+			movie.setMediaManager(new ObjectFactory().createMediaManager());
+		}
+		movie.getMediaManager().setOriginalFileName(originalFileName);
+	}
+	@Override
+	public String getOriginalFileName() {
+		if(movie.getMediaManager() != null){
+			return movie.getMediaManager().getOriginalFileName();
+		}
+		else{
+			return null;
+		}
+	}
+	
+	@Override
 	public void setRating(String rating) {
 		movie.setRating(rating);
 	}
@@ -86,7 +103,7 @@ public class MovieFileNFO extends AbstractFileNFO  {
 		if(year == null){
 			return;
 		}
-		movie.setYear(new BigInteger(year.toString()));
+		movie.setYear( year );
 	}
 	
 	
@@ -136,20 +153,20 @@ public class MovieFileNFO extends AbstractFileNFO  {
 		if(value == null){
 			return;
 		}
-		movie.setVotes(new BigInteger(value.toString()));
+		movie.setVotes( value );
 	}
 	
 	public void setTop250(Integer value) {
 		if(value == null){
 			return;
 		}
-		movie.setTop250(new BigInteger(value.toString()));
+		movie.setTop250( value );
 	}
 	
 	@Override
 	public Integer getYear() {
-		if(movie.getYear() != null){
-			return movie.getYear().intValue();
+		if(movie.getYear() > 0){
+			return movie.getYear();
 		}
 		return null;
 	}
@@ -174,17 +191,17 @@ public class MovieFileNFO extends AbstractFileNFO  {
 	}
 
 	public Integer getTop250() {
-		if(movie.getTop250() == null){
-			return null;
+		if(movie.getTop250() > 0){
+			return movie.getTop250();
 		}
-		return movie.getTop250().intValue();
+		return null;
 	}
 
 	public Integer getVotes() {
-		if(movie.getVotes() == null){
-			return null;
+		if(movie.getVotes() > 0){
+			return movie.getVotes();
 		}
-		return movie.getVotes().intValue();
+		return null;
 	}
 
 	public String getPlot() {

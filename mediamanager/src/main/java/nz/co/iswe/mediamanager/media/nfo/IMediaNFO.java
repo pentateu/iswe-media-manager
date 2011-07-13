@@ -1,5 +1,7 @@
 package nz.co.iswe.mediamanager.media.nfo;
 
+import java.io.File;
+
 import nz.co.iswe.mediamanager.media.IMediaDetail;
 import nz.co.iswe.mediamanager.media.file.MediaFileException;
 import nz.co.iswe.mediamanager.scraper.MediaType;
@@ -29,4 +31,9 @@ public interface IMediaNFO {
 	MediaType getMediaType();
 	
 	void setMediaDefinition(IMediaDetail mediaDefinition);
+
+	void setOriginalFileName(String originalFileName);
+	String getOriginalFileName();
+
+	File getFile();
 }

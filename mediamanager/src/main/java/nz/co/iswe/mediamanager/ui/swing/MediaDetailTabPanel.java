@@ -2,7 +2,11 @@ package nz.co.iswe.mediamanager.ui.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,10 +25,12 @@ public class MediaDetailTabPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -1454557244976992038L;
 	private JLabel statusValueLabel;
-	private JLabel filenameValueLabel;
 	private JTabbedPane tabbedPane;
+	private MediaDetail mediaFileDefinitionBeingDisplayed;
+	private JLabel filenameValueLabel;
 	
-		
+	private String fileName;
+	
 	/**
 	 * Create the panel.
 	 */
@@ -35,32 +41,67 @@ public class MediaDetailTabPanel extends JPanel {
 		JPanel topPanel = new JPanel();
 		topPanel.setBackground(Color.WHITE);
 		add(topPanel, BorderLayout.NORTH);
+		topPanel.setLayout(new MigLayout("", "[30px][][76.00][][105.00]", "[14px]"));
 		
-		JLabel filenameLabel = new JLabel("File : ");
-		filenameLabel.setFont(new Font("Verdana", Font.BOLD, 14));
+		JLabel fileLabel = new JLabel("File :");
+		fileLabel.setFont(new Font("Verdana", Font.BOLD, 14));
+		topPanel.add(fileLabel, "cell 0 0");
 		
-		filenameValueLabel = new JLabel("[No Media Selected]");
+		filenameValueLabel = new JLabel("[ - ]");
 		filenameValueLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
-		topPanel.setLayout(new MigLayout("", "[30px][379.00px][76.00][105.00]", "[14px][]"));
-		topPanel.add(filenameLabel, "cell 0 0,alignx left,aligny top");
-		topPanel.add(filenameValueLabel, "cell 1 0,growx,aligny top");
+		topPanel.add(filenameValueLabel, "cell 1 0");
 		
 		JLabel statusLabel = new JLabel("Status : ");
 		statusLabel.setFont(new Font("Verdana", Font.BOLD, 12));
-		topPanel.add(statusLabel, "cell 0 1");
+		topPanel.add(statusLabel, "cell 3 0");
 		
 		statusValueLabel = new JLabel("[Status]");
 		statusValueLabel.setFont(new Font("Verdana", Font.PLAIN, 12));
-		topPanel.add(statusValueLabel, "cell 1 1 3 1");
+		topPanel.add(statusValueLabel, "cell 4 0");
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
 		add(tabbedPane, BorderLayout.CENTER);
 		
-		
+		addComponentListener(new ComponentListener() 
+		{  
+		        // This method is called after the component's size changes
+		        public void componentResized(ComponentEvent evt) {
+		            Component c = (Component)evt.getSource();
+		            notifyResized(c.getSize());
+		        }
+
+				@Override
+				public void componentHidden(ComponentEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void componentMoved(ComponentEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void componentShown(ComponentEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+		});
 	}
 
-	private MediaDetail mediaFileDefinitionBeingDisplayed;
 	
+	
+	protected void notifyResized(Dimension size) {
+		if(fileName == null){
+			return;
+		}
+		double width = size.getWidth() - 250;
+		filenameValueLabel.setText(Util.shortString(fileName, width, 0.15));
+	}
+
+
+
 	/**
 	 * Open a browser tab for the current media file
 	 * @param mediaDetail 
@@ -105,12 +146,14 @@ public class MediaDetailTabPanel extends JPanel {
 			return;
 		}
 		
+		//populate
 		mediaFileDefinitionBeingDisplayed = mediaDetail;
 		
 		clear();
 		
-		//populate
-		filenameValueLabel.setText(mediaDetail.getFileName());
+		fileName = mediaDetail.getMainFile().getPath();
+		filenameValueLabel.setToolTipText(fileName);
+		filenameValueLabel.setText(Util.shortString(fileName, this.getSize().getWidth(), 0.088));
 		
 		//status
 		if(MediaStatus.CANDIDATE_DETAILS_FOUND.equals(mediaDetail.getStatus())){
@@ -158,8 +201,8 @@ public class MediaDetailTabPanel extends JPanel {
 					showBrowserTab(mediaDetail);
 				}
 			});
-			mediaDetailPanel.showMediaDefinition(mediaDetail);
 			tabbedPane.addTab("Media Details", null, mediaDetailPanel, null);
+			mediaDetailPanel.showMediaDefinition(mediaDetail);
 			
 			//add the browser tab
 			
@@ -169,7 +212,7 @@ public class MediaDetailTabPanel extends JPanel {
 			showBrowserTab(mediaDetail);
 		}
 		else {
-			statusValueLabel.setText( "New! Click on the scrap button above to get the media details" );
+			statusValueLabel.setText( "New ! " );
 		}
 		
 		
@@ -178,7 +221,7 @@ public class MediaDetailTabPanel extends JPanel {
 	private void clear() {
 		statusValueLabel.setText("[Status]");
 		filenameValueLabel.setText("[No Media Selected]");
-		
+		fileName = "";
 		tabbedPane.removeAll();
 	}
 	

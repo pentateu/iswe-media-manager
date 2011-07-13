@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -45,7 +46,9 @@ public class BrowserPanel extends JPanel {
 	    
 	    // Create an additional bar allowing to show/hide the menu bar of the web browser.
 	    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 4));
-	    JButton scrapeButton = new JButton("Scrape Media Details");
+	    JButton scrapeButton = new JButton("Scrape");
+	    scrapeButton.setToolTipText("Scrape Media Detail");
+	    scrapeButton.setIcon(new ImageIcon(MediaDetailPanel.class.getResource("/nz/co/iswe/mediamanager/ui/img/scrap_again_ico.png")));
 	    scrapeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -87,8 +90,5 @@ public class BrowserPanel extends JPanel {
 
 	public void navigateTo(String url) {
 		webBrowser.navigate(url);
-	}
-	
-
-	
+	}	
 }

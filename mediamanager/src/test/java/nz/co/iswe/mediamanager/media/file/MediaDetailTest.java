@@ -321,6 +321,8 @@ public class MediaDetailTest {
 		idxFile = new File(newMediaFolder, "Drive Angry (2010).idx");
 		Assert.assertNotNull("Idx file",  idxFile);
 		Assert.assertTrue("Idx file is file", idxFile.isFile() );
+		
+		Assert.assertEquals("Original File Name", "1-3-3-8.com_twz-drive.angry.720p.mkv", mediaDetail.getOriginalFileName());
 		// ====================================================================================== //
 		
 	}

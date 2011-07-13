@@ -132,6 +132,7 @@ public abstract class AbstractMediaFolderChangeAware implements MediaFolderChang
 				}
 			}
 		}
+		mediaFolder.addListener(this);
 	}
 
 	protected void validateFile(File file) throws MediaFileException {

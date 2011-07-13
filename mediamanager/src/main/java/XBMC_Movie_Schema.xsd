@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:schema 	xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" 
+			xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+            jxb:version="2.0">
   <xs:element name="movie">
     <xs:complexType>
       <xs:sequence>
@@ -27,6 +29,7 @@
         <xs:element ref="fileinfo"/>
         <xs:element ref="director"/>
         <xs:element maxOccurs="unbounded" ref="actor"/>
+        <xs:element ref="mediaManager"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -35,9 +38,9 @@
   <xs:element name="sorttitle" type="xs:string"/>
   <xs:element name="set" type="xs:string"/>
   <xs:element name="rating" type="xs:string"/>
-  <xs:element name="year" type="xs:integer"/>
-  <xs:element name="top250" type="xs:integer"/>
-  <xs:element name="votes" type="xs:integer"/>
+  <xs:element name="year" type="xs:int"/>
+  <xs:element name="top250" type="xs:int"/>
+  <xs:element name="votes" type="xs:int"/>
   <xs:element name="outline" type="xs:string"/>
   <xs:element name="plot" type="xs:string"/>
   <xs:element name="tagline">
@@ -46,19 +49,13 @@
   <xs:element name="runtime" type="xs:string"/>
   <xs:element name="thumb" type="xs:anyURI"/>
   <xs:element name="mpaa" type="xs:string"/>
-  <xs:element name="playcount" type="xs:integer"/>
+  <xs:element name="playcount" type="xs:int"/>
   <xs:element name="watched" type="xs:boolean"/>
   <xs:element name="id" type="xs:NCName"/>
   <xs:element name="filenameandpath" type="xs:string"/>
-  <xs:element name="trailer">
-    <xs:complexType/>
-  </xs:element>
-  <xs:element name="genre">
-    <xs:complexType/>
-  </xs:element>
-  <xs:element name="credits">
-    <xs:complexType/>
-  </xs:element>
+  <xs:element name="trailer" type="xs:string"/>
+  <xs:element name="genre" type="xs:string"/>
+  <xs:element name="credits" type="xs:string"/>
   <xs:element name="fileinfo">
     <xs:complexType>
       <xs:sequence>
@@ -86,8 +83,8 @@
     </xs:complexType>
   </xs:element>
   <xs:element name="aspect" type="xs:decimal"/>
-  <xs:element name="width" type="xs:integer"/>
-  <xs:element name="height" type="xs:integer"/>
+  <xs:element name="width" type="xs:int"/>
+  <xs:element name="height" type="xs:int"/>
   <xs:element name="audio">
     <xs:complexType>
       <xs:sequence>
@@ -97,7 +94,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="channels" type="xs:integer"/>
+  <xs:element name="channels" type="xs:int"/>
   <xs:element name="subtitle">
     <xs:complexType>
       <xs:sequence>
@@ -118,4 +115,12 @@
   <xs:element name="role" type="xs:NCName"/>
   <xs:element name="codec" type="xs:NCName"/>
   <xs:element name="language" type="xs:NCName"/>
+  <xs:element name="mediaManager">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="blogPostURL" type="xs:string"/>
+        <xs:element name="originalFileName" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

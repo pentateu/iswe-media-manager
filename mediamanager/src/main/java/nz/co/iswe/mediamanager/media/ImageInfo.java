@@ -61,7 +61,7 @@ public class ImageInfo implements MediaFolderChangeListener {
 				file = newFile;
 			}
 			else{
-				throw new MediaFileException("Error trying to move the NFO file to the new folder! " + newFile.getPath());
+				throw new MediaFileException("Error trying to move the image file to the new folder! " + newFile.getPath());
 			}
 		}
 	}

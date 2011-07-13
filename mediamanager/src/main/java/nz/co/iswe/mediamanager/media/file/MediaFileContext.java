@@ -94,7 +94,7 @@ public class MediaFileContext {
 	public void scrap(final IScrapingStatusObserver observer, final IScraper scraper, final MediaDetail mediaDetail) {
 		stopScraping = false;
 
-		if (observer == null || scraper == null || mediaDetail == null) {
+		if (observer == null || mediaDetail == null) {
 			log.warning("Invalid arguments! Exiting the method.");
 			return;
 		}

@@ -33,6 +33,15 @@ public class DocumentaryFileNFO extends AbstractFileNFO  {
 	}
 
 	@Override
+	public void setOriginalFileName(String originalFileName) {
+		movie.getMediaManager().setOriginalFileName(originalFileName);
+	}
+	@Override
+	public String getOriginalFileName() {
+		return movie.getMediaManager().getOriginalFileName();
+	}
+	
+	@Override
 	public void setOutline(String outline) {
 		movie.setOutline(outline);
 	}
@@ -53,7 +62,7 @@ public class DocumentaryFileNFO extends AbstractFileNFO  {
 
 	@Override
 	public void setYear(Integer year) {
-		movie.setYear(new BigInteger(year.toString()));
+		movie.setYear( year );
 	}
 
 	@Override
@@ -96,8 +105,8 @@ public class DocumentaryFileNFO extends AbstractFileNFO  {
 	
 	@Override
 	public Integer getYear() {
-		if(movie.getYear() != null){
-			return movie.getYear().intValue();
+		if(movie.getYear() > 0){
+			return movie.getYear();
 		}
 		return null;
 	}

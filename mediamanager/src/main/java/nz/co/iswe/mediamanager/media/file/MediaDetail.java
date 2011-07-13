@@ -17,6 +17,7 @@ import nz.co.iswe.mediamanager.media.MediaFileListener;
 import nz.co.iswe.mediamanager.media.MediaStatus;
 import nz.co.iswe.mediamanager.media.folder.AbstractMediaFolderChangeAware;
 import nz.co.iswe.mediamanager.media.folder.MediaFolder;
+import nz.co.iswe.mediamanager.media.folder.MediaFolderChangeListener;
 import nz.co.iswe.mediamanager.media.folder.MediaFolderContext;
 import nz.co.iswe.mediamanager.media.nfo.AbstractFileNFO;
 import nz.co.iswe.mediamanager.media.nfo.IMediaNFO;
@@ -56,6 +57,8 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 	protected String blogPostURL;
 
 	protected String title;
+	
+	protected String originalFileName;
 
 	protected boolean multiPart;
 
@@ -87,9 +90,9 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		if (mediaNFO != null) {
 			this.status = MediaStatus.MEDIA_DETAILS_FOUND;
 			this.mediaType = mediaNFO.getMediaType();
-
 			this.title = mediaNFO.getTitle();
-
+			this.originalFileName = mediaNFO.getOriginalFileName();
+			
 			// Load image
 			if (mediaNFO.getThumb() != null) {
 				try {
@@ -326,6 +329,11 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 			File file = getMainFile();
 			mediaNFO.setFilenameAndPath(file.getPath());
 
+			//
+			if(originalFileName != null){
+				mediaNFO.setOriginalFileName(originalFileName);
+			}
+			
 			mediaNFO.save();
 		}
 
@@ -370,6 +378,7 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 			File file = getMainFile();
 			mediaNFO.setFilenameAndPath(file.getPath());
 		}
+		mediaFolder.addListener(this);
 		//fireNotifyMediaFilePathChanged();
 	}
 /*
@@ -420,7 +429,7 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		//fireNotifyMediaFilePathChanged();
 	}
 
-	protected File getMainFile() {
+	public File getMainFile() {
 		File file = null;
 		if(isMultiPart()){
 			file = getFile(PART + "1");
@@ -476,12 +485,14 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 	public void confirmCandidate(CandidateMediaDetail candidateMediaDefinition) throws MediaFileException {
 		log.info("Confirming candidate: " + candidateMediaDefinition + " \nOn top of: " + this);
 
+		boolean isInExclusiveFolder = isInExclusiveFolder();
+		
 		// get details
 		this.title = candidateMediaDefinition.getTitle();
 		this.mediaType = candidateMediaDefinition.getMediaType();
 		this.status = MediaStatus.MEDIA_DETAILS_FOUND;
 
-		boolean isInExclusiveFolder = isInExclusiveFolder();
+		
 		
 		// move candidate image
 		if (candidateMediaDefinition.getPosterImage() != null) {
@@ -499,8 +510,6 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 			}
 		}
 
-		
-		
 		// Move the NFO
 		AbstractFileNFO candidateNFO = (AbstractFileNFO) candidateMediaDefinition.getMediaNFO();
 
@@ -565,6 +574,20 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		saveNFO();
 
 		notifyChange();
+		
+		if ( ! isInExclusiveFolder) {
+			moveToExclusiveFolder();
+		}
+	}
+	
+	@Override
+	protected boolean renameTo(String key, String newFileName) throws MediaFileException {
+		//store the previous filename
+		if(originalFileName == null){
+			originalFileName = getMainFile().getName();
+		}
+		
+		return super.renameTo(key, newFileName);
 	}
 
 	private String buildExclusiveFolderName() {
@@ -623,7 +646,7 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 
 	
 	/**
-	 * Returns the File name without estension
+	 * Returns the File name without extension
 	 * @return
 	 */
 	public String getFileName() {
@@ -646,7 +669,53 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 
 	public synchronized void moveToExclusiveFolder() throws MediaFileException {
 		File newFolder = new File(mediaFolder.getFile(), buildExclusiveFolderName());
-		mediaFolder.createNewExclusiveFolder(newFolder);
+		if(! newFolder.exists()){
+			newFolder.mkdirs();
+		}
+		else{
+			throw new MediaFileException("Folder " + newFolder.getPath() + " already exists. Cannot move the media files.");
+		}
+		
+		//remove previous file listener from this folder
+		mediaFolder.removeListener(this);
+		
+		//NFO
+		MediaFolderChangeListener nfo = (AbstractFileNFO)getMediaNFO();
+		if(nfo != null){
+			mediaFolder.removeListener(nfo);
+		}
+		
+		//Image
+		MediaFolderChangeListener imageInfo = getPosterImage();
+		if(imageInfo != null){
+			mediaFolder.removeListener(imageInfo);
+		}
+		
+		//Subtitle
+		MediaFolderChangeListener subtitle = (MediaFolderChangeListener)getSubtitle();
+		if(subtitle != null){
+			mediaFolder.removeListener(subtitle);
+		}
+		
+		//grab a reference to the new mediaFolder
+		mediaFolder = MediaFolderContext.getInstance().getMediaFolder(newFolder.getPath());
+		
+		//move files to the new folder
+		notifyNewMediaFolderCreated(mediaFolder);
+		
+		if(nfo != null){
+			nfo.notifyNewMediaFolderCreated(mediaFolder);
+		}
+		
+		if(imageInfo != null){
+			imageInfo.notifyNewMediaFolderCreated(mediaFolder);
+		}
+		
+		if(subtitle != null){
+			subtitle.notifyNewMediaFolderCreated(mediaFolder);
+		}
+		
+		saveNFO();//make sure update the poster file path
 	}
 
 	public boolean isMultiPart() {
@@ -741,7 +810,9 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 	}
 
 	public void addListener(MediaFileListener listener) {
-		listeners.add(listener);
+		if( ! listeners.contains(listener)){
+			listeners.add(listener);
+		}
 	}
 
 	public void removeListener(MediaFileListener listener) {
@@ -775,5 +846,9 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 
 	public String getBlogPostURL() {
 		return blogPostURL;
+	}
+
+	public String getOriginalFileName() {
+		return originalFileName;
 	}
 }

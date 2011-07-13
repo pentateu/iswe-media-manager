@@ -8,13 +8,10 @@
  	
  	- Ability to check whether a movie exists in the local library or not before download
 
+## IMprove
 
- - MediaDetailTabPanel :
-    - Display the full file name.. trim the folder name if it is too big and provide a button to see it complete if it is trimed.
- - Display in the MediaDetailPanel :
-    - Display if the Media is in a exclusive folder and if not display a button to move to a exclusive folder.
-    - Display Poster and NFO file details.
-    - Date last scrap
+ When actions like scrape again, confirm candidate, move to exclusive folder occur, need to refresh the MEdiaDetailPanel
+ 
 
 ## Scraping
 
@@ -35,8 +32,6 @@
 
 
 ## General improvements
-
- - Improve the XBMC Movie Schema.. nodes like genre has its own type when it should be string and Integer nodes are BidDecimal in java..
 
  - Implement a XML configuration file for the application
 

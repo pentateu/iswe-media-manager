@@ -126,7 +126,7 @@ public class ScraperContext {
 		return null;
 	}
 	
-	private IScraper getBestScraper(MediaDetail mediaFileDefinition) {
+	public IScraper getBestScraper(MediaDetail mediaFileDefinition) {
 		for(Class<? extends IScraper> scraperClass : registeredScrapers){
 			IScraper scraper = newInstance(scraperClass);
 			if(scraper != null && scraper.preferedScraperFor(mediaFileDefinition)){

@@ -41,7 +41,7 @@ public class MediaFolder {
 		
 		
 	}
-	
+	/*
 	public void createNewExclusiveFolder(File newFolder) throws MediaFileException {
 		if(! newFolder.exists()){
 			newFolder.mkdirs();
@@ -53,11 +53,13 @@ public class MediaFolder {
 		setNewFolder(newFolder);
 		
 		//notify the listeners
-		MediaFolderChangeListener [] listenerArray = mediaFolderChangeListeners.toArray(new MediaFolderChangeListener[]{});
-		for(MediaFolderChangeListener listener : listenerArray){
-			listener.notifyNewMediaFolderCreated(this);
-		}
+		//all files listening in this folder
+		//MediaFolderChangeListener [] listenerArray = mediaFolderChangeListeners.toArray(new MediaFolderChangeListener[]{});
+		//for(MediaFolderChangeListener listener : listenerArray){
+		//	listener.notifyNewMediaFolderCreated(this);
+		//}
 	}
+	*/
 	
 	protected void setNewFolder(File newFolder) throws MediaFileException {
 		//validate the new folder
@@ -192,7 +194,9 @@ public class MediaFolder {
 
 
 	public synchronized void addListener(MediaFolderChangeListener listener) {
-		mediaFolderChangeListeners.add(listener);
+		if( ! mediaFolderChangeListeners.contains(listener)){
+			mediaFolderChangeListeners.add(listener);
+		}
 	}
 
 

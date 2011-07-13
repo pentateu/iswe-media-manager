@@ -495,30 +495,35 @@ public class CandidateMediaDetailTest  {
 		// ====================================================================================== //
 	}
 
-	private void confirmCandidate(MediaDetail mediaFileDefinition) throws MediaFileException {
+	private void confirmCandidate(MediaDetail mediaDetail) throws MediaFileException {
 		// ######################################################## //
 		// ################        Setup 01        ################ //
 		//Confirm the cadidate
-		CandidateMediaDetail candidate_0 = mediaFileDefinition.getCandidates().get(0);
+		CandidateMediaDetail candidate_0 = mediaDetail.getCandidates().get(0);
 		
-		mediaFileDefinition.confirmCandidate(candidate_0);
+		mediaDetail.confirmCandidate(candidate_0);
 				
 		// ======================================================== //
 		// =================      Assert 01       ================= //
 		//Media File
-		Assert.assertEquals("Title", "Drive Angry", mediaFileDefinition.getTitle() );
-		Assert.assertEquals("List of Candidates", 0, mediaFileDefinition.getCandidates().size() );
-		Assert.assertEquals("MediaDetailStatus", MediaStatus.MEDIA_DETAILS_FOUND, mediaFileDefinition.getStatus() );
-		Assert.assertNotNull("Media NFO", mediaFileDefinition.getMediaNFO() );
-		Assert.assertNotNull("Media PosterImage", mediaFileDefinition.getPosterImage() );
-		Assert.assertTrue("Media PosterImage", mediaFileDefinition.hasPoster());
-		Assert.assertEquals("Media Type", MediaType.MOVIE, mediaFileDefinition.getMediaType() );
+		Assert.assertEquals("Title", "Drive Angry", mediaDetail.getTitle() );
+		Assert.assertEquals("List of Candidates", 0, mediaDetail.getCandidates().size() );
+		Assert.assertEquals("MediaDetailStatus", MediaStatus.MEDIA_DETAILS_FOUND, mediaDetail.getStatus() );
+		Assert.assertNotNull("Media NFO", mediaDetail.getMediaNFO() );
+		Assert.assertNotNull("Media PosterImage", mediaDetail.getPosterImage() );
+		Assert.assertTrue("Media PosterImage", mediaDetail.hasPoster());
+		Assert.assertEquals("Media Type", MediaType.MOVIE, mediaDetail.getMediaType() );
 		
 		//media folder exclusive
-		Assert.assertFalse("Media folder exclusive", mediaFileDefinition.isInExclusiveFolder() );
+		Assert.assertTrue("Media folder exclusive", mediaDetail.isInExclusiveFolder() );
 		
 		//media files validation
 		File mediaFile = new File(testMediaFolder, "Drive Angry (2011).mkv");
+		Assert.assertFalse("MediaFile does exists", mediaFile.exists());
+		
+		testMediaFolder = new File(testMediaFolder, "Drive Angry (2011)");
+		
+		mediaFile = new File(testMediaFolder, "Drive Angry (2011).mkv");
 		Assert.assertTrue("MediaFile does exists", mediaFile.exists());
 		Assert.assertTrue("MediaFile is file", mediaFile.isFile());
 		
@@ -532,7 +537,7 @@ public class CandidateMediaDetailTest  {
 		Assert.assertTrue("Poster Image is file", imageFile.isFile());
 		
 		//NFO
-		MovieFileNFO nfo = (MovieFileNFO)mediaFileDefinition.getMediaNFO();
+		MovieFileNFO nfo = (MovieFileNFO)mediaDetail.getMediaNFO();
 		Assert.assertEquals("Title", "Drive Angry", nfo.getTitle() );
 		Assert.assertEquals("NFO Year", new Integer(2011), nfo.getYear());
 		Assert.assertEquals("NFO Thumb", testMediaFolder.getPath() + File.separator + "cover.jpg", nfo.getThumb());
@@ -542,6 +547,7 @@ public class CandidateMediaDetailTest  {
 		Assert.assertEquals("NFO Rating", "0.1", nfo.getRating());
 		Assert.assertEquals("NFO Outline", "This movie is horrible...", nfo.getOutline());
 		
+		Assert.assertEquals("Original File Name", "1-3-3-8.com_twz-drive.angry.720p.mkv", mediaDetail.getOriginalFileName());
 		// ====================================================================================== //
 	}
 }

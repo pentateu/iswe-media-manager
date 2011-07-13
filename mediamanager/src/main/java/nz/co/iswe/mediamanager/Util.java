@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
-
 import nz.co.iswe.mediamanager.media.file.MediaFileException;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Utility methods.
@@ -267,6 +267,16 @@ public class Util {
 		char c = 160;
 		text = text.replaceAll(String.valueOf( c ), "");
 		text = StringUtils.trimToEmpty(text); 
+		return text;
+	}
+
+	public static String shortString(String text, double width, double factor) {
+		
+		int maxFileNameLength = (int)(width * factor); 
+		if(text.length() > maxFileNameLength){
+			int start = (text.length() - maxFileNameLength) + 4;
+			text = ".../" + text.substring(start);
+		}
 		return text;
 	}
 
