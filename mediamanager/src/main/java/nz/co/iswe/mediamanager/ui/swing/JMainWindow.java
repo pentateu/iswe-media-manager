@@ -25,6 +25,7 @@ import nz.co.iswe.mediamanager.media.file.MediaFileContext;
 import nz.co.iswe.mediamanager.media.file.MediaFileException;
 import nz.co.iswe.mediamanager.scraper.IScraper;
 import nz.co.iswe.mediamanager.scraper.IScrapingStatusObserver;
+import nz.co.iswe.mediamanager.scraper.SearchResult;
 import chrriis.common.UIUtils;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 
@@ -234,10 +235,14 @@ public class JMainWindow {
 		}
 	}
 
-	public void scrape(IScraper scraper, MediaDetail mediaDetail) {
+	public void scrape(MediaDetail mediaDetail) {
+		scrape(mediaDetail, null, null);
+	}
+	
+	public void scrape(MediaDetail mediaDetail, IScraper scraper, SearchResult searchResult) {
 		IScrapingStatusObserver observer = setupStatusBarForScraping(2);
 		MediaFileContext mediaFileContext = MediaFileContext.getInstance();
-		mediaFileContext.scrap(observer, scraper, mediaDetail);
+		mediaFileContext.scrap(observer, scraper, mediaDetail, searchResult);
 	}
 
 	private void startScrap() {

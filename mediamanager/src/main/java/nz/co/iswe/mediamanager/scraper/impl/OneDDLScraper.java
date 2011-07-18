@@ -79,7 +79,7 @@ public class OneDDLScraper extends AbstractScraper {
 	
 	
 	 
-	private List<SearchResult> candidatePosts = new ArrayList<SearchResult>();
+	private List<SearchResult> candidateSearchResults = new ArrayList<SearchResult>();
 	
 	@Override
 	public void searchAndScrap() {
@@ -92,17 +92,12 @@ public class OneDDLScraper extends AbstractScraper {
 			mediaDetail.setMediaType(searchResult.getMediaType());
 			mediaDetail.setBlogPostURL(searchResult.getURL());
 			
-			try {
-				scrapeMediaDetails(mediaDetail, searchResult);
-			} catch (MediaFileException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			scrapeMediaDetails(mediaDetail, searchResult);
 		}
 		else{
-			log.fine("Search NOT succesfull! Number of candidates found: " + candidatePosts.size());
+			log.fine("Search NOT succesfull! Number of candidates found: " + candidateSearchResults.size());
 			//check if any candidates has been found
-			if(candidatePosts.size() > 0){
+			if(candidateSearchResults.size() > 0){
 				//save the candidates for the user to review
 				mediaDetail.setStatus(MediaStatus.CANDIDATE_LIST_FOUND);
 				
@@ -112,7 +107,7 @@ public class OneDDLScraper extends AbstractScraper {
 					mediaDetail.setStatus(MediaStatus.CANDIDATE_DETAILS_FOUND);
 				}
 				else{
-					mediaDetail.setCandidateUrls(candidatePosts);
+					mediaDetail.setCandidateUrls(candidateSearchResults);
 				}
 				
 				observer.notifyStepProgress();
@@ -163,7 +158,7 @@ public class OneDDLScraper extends AbstractScraper {
 		/**
 		 * For each candidate URL create an instance of CandidateMediaDefinition
 		 */
-		for(SearchResult searchResult : candidatePosts){
+		for(SearchResult searchResult : candidateSearchResults){
 			try{
 				//create media definition
 				CandidateMediaDetail candidateMediaDefinition = new CandidateMediaDetail(mediaDetail);
@@ -180,15 +175,10 @@ public class OneDDLScraper extends AbstractScraper {
 	}
 
 	public void scrape(SearchResult searchResult) {
-		try {
-			scrapeMediaDetails(mediaDetail, searchResult);
-		} catch (MediaFileException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		scrapeMediaDetails(mediaDetail, searchResult);
 	}
 	
-	private void scrapeMediaDetails(final IMediaDetail mediaDetail, final SearchResult searchResult) throws MediaFileException {
+	private void scrapeMediaDetails(final IMediaDetail mediaDetail, final SearchResult searchResult)  {
 		//
 		try {
 			Document doc = Jsoup.connect(searchResult.getURL())
@@ -259,8 +249,14 @@ public class OneDDLScraper extends AbstractScraper {
 				mediaDetail.save();
 			}
 			
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
 			log.log(Level.WARNING, "Error fetching Media: " + mediaDetail + "  URL: " + searchResult.getURL(), e);
+			mediaDetail.setStatus(MediaStatus.ERROR);
+		}
+		catch (MediaFileException e) {
+			log.log(Level.WARNING, "Error saving media info Media: " + mediaDetail + "  URL: " + searchResult.getURL(), e);
+			mediaDetail.setStatus(MediaStatus.ERROR);
 		}
 	}
 
@@ -288,7 +284,7 @@ public class OneDDLScraper extends AbstractScraper {
 
 	
 
-	private SearchResult search(String query, String titleToCompare, boolean normalizePostTitle) {
+	private SearchResult search(String query, String titleToCompare, boolean normalizeResultTitle) {
 		
 		String url = "http://www.oneddl.com/?s=" + query;
 		
@@ -316,7 +312,7 @@ public class OneDDLScraper extends AbstractScraper {
 					//A element containing the movie name and the link to the post page
 					String postTitle = element.text();
 					
-					if(normalizePostTitle){
+					if(normalizeResultTitle){
 						//Normalise the postTitle name
 						postTitle = normalizePostTitle(postTitle);
 					}
@@ -331,7 +327,7 @@ public class OneDDLScraper extends AbstractScraper {
 					log.fine("Score: " + score + " Total Found : " + totalFound + 
 							" Media Title: " + titleToCompare + 
 							" Post Title: " + postTitle + 
-							" normalizePostTitle: " + normalizePostTitle + 
+							" normalizePostTitle: " + normalizeResultTitle + 
 							" URL: " + url);
 					
 					String postURL = element.attr("href");
@@ -345,8 +341,8 @@ public class OneDDLScraper extends AbstractScraper {
 						return searchResult;
 					}
 					else if(score > 20){
-						if( ! candidatePosts.contains(searchResult) ){
-							candidatePosts.add(searchResult);
+						if( ! candidateSearchResults.contains(searchResult) ){
+							candidateSearchResults.add(searchResult);
 						}
 					}
 				}
@@ -408,6 +404,12 @@ public class OneDDLScraper extends AbstractScraper {
 		}
 		
 		return false;
+	}
+
+	@Override
+	public SearchResult createSearchResults(String url, MediaType movie) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -215,5 +215,12 @@ public class MovieFileNFO extends AbstractFileNFO  {
 		return movie.getId();
 	}
 
+	public void setGenre(String genre) {
+		movie.setGenre(genre);
+	}
+	public String getGenre( ) {
+		return movie.getGenre();
+	}
+
 	
 }

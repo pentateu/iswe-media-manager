@@ -135,7 +135,7 @@ public class MediaDetailTest {
 		//set the media details title
 		mediaDetail.setTitle("Drive Angry");
 		mediaDetail.setPosterImage(imageInfo);
-		movieFileNFO.setYear(2011);
+		mediaDetail.setYear(2011);
 		movieFileNFO.setRating("0.1");
 		movieFileNFO.setOutline("Short text description...");
 		mediaDetail.save();
@@ -267,7 +267,7 @@ public class MediaDetailTest {
 		// ##### Setup 7 ##### // Change year and will affect media file name and folder name, should also move all files to the new folder
 		//change year
 		movieFileNFO = (MovieFileNFO)mediaDetail.getMediaNFO();
-		movieFileNFO.setYear(2010);
+		mediaDetail.setYear(2010);
 		mediaDetail.save();
 		
 		// ##### Assert 07 ##### //
@@ -429,7 +429,7 @@ public class MediaDetailTest {
 		mediaDetail.setTitle("Harry Potter and the Deathly Hallows: Part 1");
 		mediaDetail.setMediaType(MediaType.MOVIE);
 		mediaDetail.save();
-		mediaDetail.getMediaNFO().setYear(2010);
+		mediaDetail.setYear(2010);
 		mediaDetail.save();
 		
 		// ======================================================== //
@@ -492,7 +492,7 @@ public class MediaDetailTest {
 		// ######################################################## //
 		// ################        Setup 03        ################ //
 		//create a valid mediaDetail
-		mediaDetail.getMediaNFO().setYear(2010);
+		mediaDetail.setYear(2010);
 		mediaDetail.save();
 		
 		// ======================================================== //
@@ -527,6 +527,7 @@ public class MediaDetailTest {
 		// =================      Assert 01       ================= //
 		//assert basic properties
 		Assert.assertEquals("Title", "Certified Copy", mediaDetail.getTitle() );
+		Assert.assertEquals("Year", new Integer(2010), mediaDetail.getYear());
 		Assert.assertTrue("Media isMultiPart", mediaDetail.isMultiPart());
 		//media folder exclusive
 		Assert.assertFalse("Media folder exclusive", mediaDetail.isInExclusiveFolder() );
@@ -547,16 +548,16 @@ public class MediaDetailTest {
 		Assert.assertEquals("Title", "Certified Copy", mediaDetail.getTitle() );
 		Assert.assertTrue("Media isMultiPart", mediaDetail.isMultiPart());
 		
-		File part1 = new File(testMediaFolder, "Certified Copy/Certified Copy - Part1.avi");
+		File part1 = new File(testMediaFolder, "Certified Copy (2010)/Certified Copy (2010) - Part1.avi");
 		Assert.assertTrue("File part renamed", part1.exists());
 		
-		File part2 = new File(testMediaFolder, "Certified Copy/Certified Copy - Part2.avi");
+		File part2 = new File(testMediaFolder, "Certified Copy (2010)/Certified Copy (2010) - Part2.avi");
 		Assert.assertTrue("File part renamed", part2.exists());
 		
-		File nfoFile = new File(testMediaFolder, "Certified Copy/Certified Copy.nfo");
+		File nfoFile = new File(testMediaFolder, "Certified Copy (2010)/Certified Copy (2010).nfo");
 		Assert.assertTrue("NFO file exists", nfoFile.exists());
 		
-		File coverFile = new File(testMediaFolder, "Certified Copy/cover.jpg");
+		File coverFile = new File(testMediaFolder, "Certified Copy (2010)/cover.jpg");
 		Assert.assertTrue("Cover file exists", coverFile.exists());
 		
 		//media folder exclusive
@@ -566,7 +567,7 @@ public class MediaDetailTest {
 		// ######################################################## //
 		// ################        Setup 03        ################ //
 		//create a valid mediaDetail
-		mediaDetail.getMediaNFO().setYear(2010);
+		mediaDetail.setYear(2011);
 		mediaDetail.save();
 		
 		// ======================================================== //
@@ -576,19 +577,19 @@ public class MediaDetailTest {
 		Assert.assertTrue("Media isMultiPart", mediaDetail.isMultiPart());
 		
 		Assert.assertFalse("File renamed", part1.exists());
-		part1 = new File(testMediaFolder, "Certified Copy (2010)/Certified Copy (2010) - Part1.avi");
+		part1 = new File(testMediaFolder, "Certified Copy (2011)/Certified Copy (2011) - Part1.avi");
 		Assert.assertTrue("File part renamed", part1.exists());
 		
 		Assert.assertFalse("File renamed", part2.exists());
-		part2 = new File(testMediaFolder, "Certified Copy (2010)/Certified Copy (2010) - Part2.avi");
+		part2 = new File(testMediaFolder, "Certified Copy (2011)/Certified Copy (2011) - Part2.avi");
 		Assert.assertTrue("File part renamed", part2.exists());
 		
 		Assert.assertFalse("File renamed", nfoFile.exists());
-		nfoFile = new File(testMediaFolder, "Certified Copy (2010)/Certified Copy (2010).nfo");
+		nfoFile = new File(testMediaFolder, "Certified Copy (2011)/Certified Copy (2011).nfo");
 		Assert.assertTrue("NFO file exists", nfoFile.exists());
 		
 		Assert.assertFalse("File renamed", coverFile.exists());
-		coverFile = new File(testMediaFolder, "Certified Copy (2010)/cover.jpg");
+		coverFile = new File(testMediaFolder, "Certified Copy (2011)/cover.jpg");
 		Assert.assertTrue("Cover file exists", coverFile.exists());
 		
 		//media folder exclusive

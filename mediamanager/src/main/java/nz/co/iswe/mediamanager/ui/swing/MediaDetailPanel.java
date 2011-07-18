@@ -244,7 +244,7 @@ public class MediaDetailPanel extends JPanel {
 		}
 		else{
 			//Locate the right scraper component
-			JMainWindow.getInstance().scrape(null, mediaDetail);
+			JMainWindow.getInstance().scrape(mediaDetail);
 		}
 	}
 

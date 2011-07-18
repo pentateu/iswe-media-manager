@@ -48,18 +48,21 @@ public class ScraperContext {
 	}
 
 	public void scrape(MediaDetail mediaDetail, IScraper scraper) {
+		scrape(mediaDetail, scraper, null);
+	}
+	public void scrape(MediaDetail mediaDetail, IScraper scraper, SearchResult searchResult) {
 		
 		boolean found = false;
 		
 		if(scraper != null){
-			found = scrapeImpl(mediaDetail, scraper);
+			found = scrapeImpl(mediaDetail, scraper, searchResult);
 		}
 	
 		if(!found){
 			//2: Locate the best scraper
 			scraper = getBestScraper(mediaDetail);
 			if(scraper != null){
-				found = scrapeImpl(mediaDetail, scraper);
+				found = scrapeImpl(mediaDetail, scraper, searchResult);
 			}
 		}
 		
@@ -70,14 +73,15 @@ public class ScraperContext {
 			for(Class<? extends IScraper> scraperClass : defaultScrapers){
 				scraper = newInstance(scraperClass);
 				
+				/*
 				observer.notifyStepProgress();
 				scraper.setMediaDefinition(mediaDetail);
 				scraper.setScrapingStatusObserver(observer);
 				
 				//scrape the info for the provided media file
 				scraper.searchAndScrap();
-				
-				if(MediaStatus.MEDIA_DETAILS_FOUND.equals( mediaDetail.getStatus()) ){
+				*/
+				if(scrapeImpl(mediaDetail, scraper, searchResult)){
 					//if the media detail is found, stop from trying others scrapers
 					break;
 				}
@@ -98,14 +102,20 @@ public class ScraperContext {
 		
 	}
 	
-	private boolean scrapeImpl(MediaDetail mediaDetail, IScraper scraper) {
+	private boolean scrapeImpl(MediaDetail mediaDetail, IScraper scraper, SearchResult searchResult) {
 		observer.notifyStepProgress();
 		
 		scraper.setMediaDefinition(mediaDetail);
 		scraper.setScrapingStatusObserver(observer);
 		
-		//scrape the info for the provided media file
-		scraper.searchAndScrap();
+		//if an URL is provided
+		if(searchResult != null){
+			scraper.scrape(searchResult);
+		}
+		else{
+			//scrape the info for the provided media file
+			scraper.searchAndScrap();	
+		}
 		
 		if(MediaStatus.MEDIA_DETAILS_FOUND.equals( mediaDetail.getStatus()) ){
 			return true;

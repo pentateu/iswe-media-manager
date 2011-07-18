@@ -106,6 +106,10 @@ public abstract class AbstractMediaFolderChangeAware implements MediaFolderChang
 					validateFile(newFile);
 					files.put(key, newFile);
 				}
+				else if(file.getPath().equals( newFile.getPath()) ){
+					validateFile(newFile);
+					files.put(key, newFile);
+				}
 				else{
 					throw new MediaFileException("Error trying get a reference of the '" + key + "' file from the new folder! " + newFile.getPath());
 				}

@@ -1,4 +1,18 @@
 
+1) Fix the unit tests errors due to the change to create the year field into the MediaDetail object. (Done)
+
+2) Continue with the implementation of the method: scrapeSearchPageDocument on IMDBMovieScraper
+
+## Scraping
+
+ - Create Unit testing for IMDB and finish with the scraping implementation
+   -> Working on this NOW ...
+
+ - Create Unit testing for:
+	- scenario when the file name is useless, but the folder name is useful to use during the scraping. 
+	  The Elephant.White.2011.720p.BluRay.x264-Japhson is a good example.
+	  
+	  
 
 ## New Features
 
@@ -13,15 +27,7 @@
  When actions like scrape again, confirm candidate, move to exclusive folder occur, need to refresh the MEdiaDetailPanel
  
 
-## Scraping
 
- - Create Unit testing for IMDB and finish with the scraping implementation
-
- - Create Unit testing for:
-	- scenario when the file name is useless, but the folder name is useful to use during the scraping. 
-	  The Elephant.White.2011.720p.BluRay.x264-Japhson is a good example.
-	  
-	  
 	  
 ## JUNIT
  - For UNIT test and also Swing test create a template folder with the media files, then copy to the test location and execute the tests on top of the test location. 

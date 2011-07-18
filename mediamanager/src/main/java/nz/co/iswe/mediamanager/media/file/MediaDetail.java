@@ -58,6 +58,8 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 
 	protected String title;
 	
+	protected Integer year;
+	
 	protected String originalFileName;
 
 	protected boolean multiPart;
@@ -91,6 +93,7 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 			this.status = MediaStatus.MEDIA_DETAILS_FOUND;
 			this.mediaType = mediaNFO.getMediaType();
 			this.title = mediaNFO.getTitle();
+			this.year = mediaNFO.getYear();
 			this.originalFileName = mediaNFO.getOriginalFileName();
 			
 			// Load image
@@ -107,6 +110,7 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		} else {
 			// create the title based on the filename
 			this.title = buildTitle();
+			this.year = getYearFromFileName();
 			tryLoadPosterImage();
 			this.status = MediaStatus.NO_MEDIA_DETAILS;
 		}
@@ -115,8 +119,15 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 
 		lookUpSubtitles();
 	}
+	
+	protected Integer getYearFromFileName(){
+		// get the filename form the first file
+		String fileName = getFileName();
+		Integer tempYear = Util.getYearFromTitle(fileName);
+		return tempYear;
+	}
 
-	private String buildTitle() {
+	protected String buildTitle() {
 		// get the filename form the first file
 		String fileName = getFileName();
 		String result = null;
@@ -229,7 +240,7 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 			for (String fileKey : keys) {
 				File file = files.get(fileKey);
 				String[] parts = Util.getMultiPartSufix(file.getName());
-				String newFileName = buildNewFileName(file, getMediaNFO(), parts[2]);
+				String newFileName = buildNewFileName(file, parts[2]);
 				// check wheather the file name will need to change
 				if (!file.getName().equals(newFileName)) {
 					renamed = renameTo(fileKey, newFileName);
@@ -239,7 +250,7 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		} 
 		else {
 			File file = getFile(MEDIA_FILE);
-			String newFileName = buildNewFileName(file, getMediaNFO(), null);
+			String newFileName = buildNewFileName(file, null);
 			// check wheather the file name will need to change
 			if (!file.getName().equals(newFileName)) {
 				renamed = renameTo(MEDIA_FILE, newFileName);
@@ -280,12 +291,12 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		return null;
 	}
 
-	protected String buildNewFileName(File file, IMediaNFO nfo, String partNumber) {
+	protected String buildNewFileName(File file, String partNumber) {
 		String newFileName = getTitle();
 		String extension = Util.getFileExtension(file.getName());
 		if (newFileName != null) {
-			if (nfo != null && nfo.getYear() != null && nfo.getYear() > 0) {
-				newFileName = newFileName + " " + "(" + nfo.getYear() + ")";
+			if (getYear() != null && getYear() > 0) {
+				newFileName = newFileName + " " + "(" + getYear() + ")";
 			} 
 			
 			if(partNumber !=  null){
@@ -320,6 +331,10 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		if (mediaNFO != null) {
 			// Populate the movie info
 			mediaNFO.setTitle(this.getTitle());
+			if(this.year != null){
+				mediaNFO.setYear(this.year);
+				this.year = null;
+			}
 
 			if (posterImage != null && posterImage.getImageFile() != null) {
 				// Poster
@@ -489,11 +504,10 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		
 		// get details
 		this.title = candidateMediaDefinition.getTitle();
+		this.year = candidateMediaDefinition.getYear();
 		this.mediaType = candidateMediaDefinition.getMediaType();
 		this.status = MediaStatus.MEDIA_DETAILS_FOUND;
 
-		
-		
 		// move candidate image
 		if (candidateMediaDefinition.getPosterImage() != null) {
 			File candidateImage = candidateMediaDefinition.getPosterImage().getImageFile();
@@ -513,7 +527,7 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		// Move the NFO
 		AbstractFileNFO candidateNFO = (AbstractFileNFO) candidateMediaDefinition.getMediaNFO();
 
-		String newFileName = buildNewFileName(getMainFile(), candidateNFO, null);
+		String newFileName = buildNewFileName(getMainFile(), null);
 
 		// Set the NFO file path to the new folder
 		String nfoFileName = Util.getFileSimpleName(newFileName) + "." + NFO;
@@ -544,7 +558,7 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 			for (String fileKey : fileNames) {
 				File file = files.get(fileKey);
 				String[] parts = Util.getMultiPartSufix(file.getName());
-				newFileName = buildNewFileName(file, candidateNFO, parts[2]);
+				newFileName = buildNewFileName(file, parts[2]);
 				// check wheather the file name will need to change
 				if (!file.getName().equals(newFileName)) {
 					renamed = renameTo(fileKey, newFileName);
@@ -554,7 +568,7 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		} 
 		else {
 			File file = getFile(MEDIA_FILE);
-			newFileName = buildNewFileName(file, candidateNFO, null);
+			newFileName = buildNewFileName(file, null);
 			// check wheather the file name will need to change
 			if (!file.getName().equals(newFileName)) {
 				renamed = renameTo(MEDIA_FILE, newFileName);
@@ -767,6 +781,24 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		this.title = title;
 		notifyChange();
 	}
+	
+	public Integer getYear() {
+		if(getMediaNFO() != null){
+			this.year = null;
+			return getMediaNFO().getYear();
+		}
+		return year;
+	}
+	public void setYear(Integer year) {
+		if(getMediaNFO() != null){
+			getMediaNFO().setYear(year);
+			this.year = null;
+		}
+		else{
+			this.year = year;
+		}
+		notifyChange();
+	}
 
 	public void setCandidateUrls(List<SearchResult> candidateURLs) {
 		this.candidateURLs = candidateURLs;
@@ -787,16 +819,18 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		StringBuffer strDescription = new StringBuffer("[MediaDefinition ");
 
 		strDescription.append(" Title: ").append(title);
+		
+		strDescription.append(" Year: ").append(year);
 
-		strDescription.append(" Status: " + status);
+		strDescription.append(" Status: ").append(status);
 
 		if (mediaNFO != null) {
-			strDescription.append(" Media NFO: " + mediaNFO);
+			strDescription.append(" Media NFO: ").append(mediaNFO);
 		} else {
 			strDescription.append(" Media NFO: null");
 		}
 
-		strDescription.append(" BlogPostURL: " + blogPostURL);
+		strDescription.append(" BlogPostURL: ").append(blogPostURL);
 
 		return strDescription;
 	}
@@ -821,6 +855,7 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 
 	protected void copy(MediaDetail from) {
 		this.title 			= from.title;
+		this.year			= from.year;
 		this.files 			= new HashMap<String, File>(from.files);
 		this.multiPart 		= from.multiPart;
 		this.multiPartCount = from.multiPartCount;

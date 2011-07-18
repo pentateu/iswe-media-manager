@@ -237,7 +237,7 @@ public class CandidateMediaDetailTest_02  {
 	private void downloadCandidateImage(MediaDetail mediaFileDefinition, CandidateMediaDetail candidate_0) throws MediaFileException {
 		// ######################################################## //
 		// ################        Setup 01        ################ //
-		candidate_0.getMediaNFO().setYear(2011);
+		candidate_0.setYear(2011);
 		
 		ImageInfo imageInfo = candidate_0.getPosterImage();
 		imageInfo.setBufferedImage(bufferedImage);
@@ -388,7 +388,7 @@ public class CandidateMediaDetailTest_02  {
 		mediaFileDefinition.addCandidate(candidate_1);
 		
 		candidate_1.save();
-		candidate_1.getMediaNFO().setYear(1995);
+		candidate_1.setYear(1995);
 		candidate_1.save();
 		
 		
@@ -399,7 +399,7 @@ public class CandidateMediaDetailTest_02  {
 		mediaFileDefinition.addCandidate(candidate_2);
 		
 		candidate_2.save();
-		candidate_2.getMediaNFO().setYear(2010);
+		candidate_2.setYear(2010);
 		candidate_2.save();
 		
 		

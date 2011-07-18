@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.IOException;
 
 import junit.framework.Assert;
+import nz.co.iswe.mediamanager.media.IMediaDetail;
 import nz.co.iswe.mediamanager.media.file.MediaDetail;
 import nz.co.iswe.mediamanager.media.file.MediaFileContext;
 import nz.co.iswe.mediamanager.media.file.MediaFileException;
 import nz.co.iswe.mediamanager.media.nfo.MovieFileNFO;
 import nz.co.iswe.mediamanager.scraper.MediaType;
+import nz.co.iswe.mediamanager.scraper.SearchResult;
 import nz.co.iswe.mediamanager.testutility.TestSuitConfig;
 
 import org.jsoup.Jsoup;
@@ -64,13 +66,67 @@ public class IMDBMovieScraperTest {
 		Assert.assertFalse( scraper.isSearchScreenURL("http://www.imdb.com/title/tt1555149/") );
 
 		Assert.assertFalse( scraper.isSearchScreenURL("http://www.imdb.com/title/tt1555149/taglines") );
-
-		
-
 	}
 	
+	
 	@Test
-	public void testScrapeDocument() throws IOException, MediaFileException {
+	public void testScrapeSearchPage() throws IOException, MediaFileException {
+
+		// Setup
+		File movieFolder = new File(tempMediaFolder, "Wrecked");
+		File movieFile = new File(movieFolder, "Wrecked (2011).mkv");
+
+		File htmlFile = new File(imdbSamplesFolder, "imdb-search-Wrecked.html");
+
+		Document doc = Jsoup.parse(htmlFile, null);
+
+		IMDBMovieScraper scraper = new IMDBMovieScraper();
+		scraper.setSkipDownloadPoster(true);
+
+		MediaDetail mediaDetail = MediaFileContext.getInstance().getMediaFile(movieFile);
+		scraper.setMediaDefinition(mediaDetail);
+		mediaDetail.setMediaType(MediaType.MOVIE);
+
+		// Execute method to be tested
+		scraper.scrapeSearchPageDocument(doc, mediaDetail, "Wrecked", "http://www.imdb.com/find?s=all&q=Wrecked");
+
+		/*
+		MovieFileNFO movieFileNFO = (MovieFileNFO) mediaDetail.getMediaNFO();
+
+		Assert.assertEquals("Title", "Elite Squad 2", mediaDetail.getTitle());
+
+		Assert.assertEquals("Original Title", "Tropa de Elite 2 - O Inimigo Agora É Outro",
+				movieFileNFO.getOriginalTitle());
+
+		Assert.assertEquals("Sort Title", "Elite Squad 2", movieFileNFO.getSortTitle());
+
+		Assert.assertEquals("Year", new Integer(2010), movieFileNFO.getYear());
+
+		Assert.assertEquals("Rating", "8.4", movieFileNFO.getRating());
+
+		Assert.assertNull("top250", movieFileNFO.getTop250());
+
+		Assert.assertEquals("Votes", new Integer(8343), movieFileNFO.getVotes());
+
+		Assert.assertEquals(
+				"Outline",
+				"After a bloody invasion of the BOPE in the High-Security Penitentiary Bangu 1 in Rio de Janeiro to control a rebellion of interns... »",
+				movieFileNFO.getOutline());
+
+		Assert.assertEquals(
+				"Plot",
+				"After a bloody invasion of the BOPE in the High-Security Penitentiary Bangu 1 in Rio de Janeiro to control a rebellion of interns, the Lieutenant-Colonel Roberto Nascimento and the second in command Captain André Matias are accused by the Human Right Aids member Diogo Fraga of execution of prisoners. Matias is transferred to the corrupted Military Police and Nascimento is exonerated from the BOPE by the Governor. However, due to the increasing popularity of Nascimento, the Governor invites him to team-up with the intelligence area of the Secretary of Security. Along the years, Fraga, who is married with Nascimento's former wife, is elected State Representative and Nascimento's son Rafael has issues with his biological father. Meanwhile Nascimento and the BOPE expel the drug dealers from several slums but another enemy arises: the militia led by Major Rocha and supported by the Governor, the Secretary of Security and politicians interested in votes...",
+				movieFileNFO.getPlot());
+
+		Assert.assertEquals("Runtime", "115 min", movieFileNFO.getRuntime());
+
+		Assert.assertEquals("ID", "tt1555149", movieFileNFO.getId());
+		*/
+	}
+	
+	
+	@Test
+	public void testScrapeMovieDetailPage() throws IOException, MediaFileException {
 
 		// Setup
 		File movieFolder = new File(tempMediaFolder, "The Lord of the Rings - The Fellowship of the Ring");
@@ -87,8 +143,11 @@ public class IMDBMovieScraperTest {
 		scraper.setMediaDefinition(mediaDetail);
 		mediaDetail.setMediaType(MediaType.MOVIE);
 
+		SearchResult searchResult = new SearchResult("http://www.imdb.com/title/tt0120737/", MediaType.MOVIE);
+		
 		// Execute method to be tested
-		scraper.scrapeDocument(doc, "http://www.imdb.com/title/tt0120737/");
+		//scraper.scrape(searchResult);
+		scraper.scrapeMovieDetailPageDocument(mediaDetail, doc, searchResult);
 
 		MovieFileNFO movieFileNFO = (MovieFileNFO) mediaDetail.getMediaNFO();
 
@@ -127,7 +186,7 @@ public class IMDBMovieScraperTest {
 	}
 
 	@Test
-	public void testScrapeDocument_2() throws IOException, MediaFileException {
+	public void testScrapeMovieDetailPage_2() throws IOException, MediaFileException {
 
 		// Setup
 		File movieFolder = new File(tempMediaFolder, "Elite Squad 2");
@@ -144,8 +203,10 @@ public class IMDBMovieScraperTest {
 		scraper.setMediaDefinition(mediaDetail);
 		mediaDetail.setMediaType(MediaType.MOVIE);
 
+		SearchResult searchResult = new SearchResult("http://www.imdb.com/title/tt1555149/", MediaType.MOVIE);
+		
 		// Execute method to be tested
-		scraper.scrapeDocument(doc, "http://www.imdb.com/title/tt1555149/");
+		scraper.scrapeMovieDetailPageDocument(mediaDetail, doc, searchResult);
 
 		MovieFileNFO movieFileNFO = (MovieFileNFO) mediaDetail.getMediaNFO();
 

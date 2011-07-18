@@ -2,6 +2,8 @@ package nz.co.iswe.mediamanager.scraper.impl;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -15,10 +17,12 @@ import nz.co.iswe.mediamanager.media.file.MediaFileException;
 import nz.co.iswe.mediamanager.media.nfo.MovieFileNFO;
 import nz.co.iswe.mediamanager.scraper.MediaType;
 import nz.co.iswe.mediamanager.scraper.SearchResult;
+import nz.co.iswe.mediamanager.text.NormalizerFactory;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 public class IMDBMovieScraper extends AbstractScraper {
 
@@ -32,23 +36,41 @@ public class IMDBMovieScraper extends AbstractScraper {
 	
 	protected Pattern movieDetailSubUrlPattern = Pattern.compile("^/title/\\w{2}\\d+/$");
 	
+	private List<SearchResult> candidateSearchResults = new ArrayList<SearchResult>();
+	
 	
 	@Override
 	public void searchAndScrap() {
 		// Search a movie on iMDB
+		SearchResult searchResult = search();
 		
-		if(urlToScrape != null){
-			//1: verify if this is search results page or a movie page
+		if(searchResult != null){
+			log.fine("Search succesfull! url: " + searchResult.getURL());
+			//get the detailed information about the media
+			mediaDetail.setMediaType(searchResult.getMediaType());
+			mediaDetail.setBlogPostURL(searchResult.getURL());
 			
-			//2: if it is a movie page -> scrap the content
-			if(isMovieDetaiScreenlURL(urlToScrape)){
-				scrape(urlToScrape);
-			}
-			
+			scrape(searchResult);
 		}
-
-		// TODO: Implement IMDBMovieScraper.searchAndScrap()
-
+		else{
+			log.fine("Search NOT succesfull! Number of candidates found: " + candidateSearchResults.size());
+			//check if any candidates has been found
+			if(candidateSearchResults.size() > 0){
+				//save the candidates for the user to review
+				mediaDetail.setStatus(MediaStatus.CANDIDATE_LIST_FOUND);
+				
+				if(preLoadCandidates){
+					//scrap the candidate details
+					scrapCandidates();
+					mediaDetail.setStatus(MediaStatus.CANDIDATE_DETAILS_FOUND);
+				}
+				else{
+					mediaDetail.setCandidateUrls(candidateSearchResults);
+				}
+				
+				observer.notifyStepProgress();
+			}
+		}
 	}
 	
 	protected boolean isMovieDetaiScreenlURL(String url){
@@ -62,6 +84,14 @@ public class IMDBMovieScraper extends AbstractScraper {
 			
 		}
 		return false;
+	}
+	
+	@Override
+	public SearchResult createSearchResults(String url, MediaType mediaType) {
+		if( isMovieDetaiScreenlURL(url) ){
+			return new SearchResult(url, mediaType);
+		}
+		return null;
 	}
 	
 	protected boolean isSearchScreenURL(String url){
@@ -79,7 +109,7 @@ public class IMDBMovieScraper extends AbstractScraper {
 
 	@Override
 	public boolean preferedScraperFor(IMediaDetail mediaDefinition) {
-		// Never the prefered scraper
+		// Never the preferred scraper
 		return false;
 	}
 	
@@ -99,11 +129,116 @@ public class IMDBMovieScraper extends AbstractScraper {
 
 	@Override
 	public SearchResult search() {
-		// TODO : Implement IMDBMovieScraper.search()
+		//get the movie name
+		String mediaName = mediaDetail.getTitle();
+		
+		log.fine("Search for media : " + mediaName);
+		
+		//1: try a first an exact search using the filename
+		String query = Util.buildURLQuery(mediaName);
+		
+		SearchResult searchResult = search(query, mediaDetail, mediaDetail.getTitle());
+		
+		observer.notifyStepProgress();
+		
+		if(searchResult == null){
+			
+			//2: try to remove the filename prefix
+			String movieName = NormalizerFactory.getInstance().getFileNameNormalizer().cleanUp(mediaName);
+			query = Util.buildURLQuery(movieName);
+			searchResult = search(query, mediaDetail, movieName);
+		}
+		
+		observer.notifyStepProgress();
+		
+		observer.notifyStepProgress();
+		
+		return searchResult;
+	}
+	
+
+	protected SearchResult search(String query, IMediaDetail mediaDetailToSearch, String titleToSearch) {
+		
+		String url = "http://www.imdb.com/find?s=all&q=" + query;
+		
+		//1: Try searching by the file name on OneDDL
+		try {
+			Document doc = Jsoup.connect(url)
+				.userAgent(USER_AGENT)
+				.timeout(5000)
+				.get();
+			
+			return scrapeSearchPageDocument(doc, mediaDetailToSearch, titleToSearch, url);
+			
+		} catch (IOException e) {
+			log.log(Level.WARNING, "Error fetching Media Name: " + titleToSearch + "  URL: " + url, e);
+		}
+		
 		return null;
 	}
 
-	protected void scrapPicture(final IMediaDetail mediaDetail, final String url) {
+	protected SearchResult scrapeSearchPageDocument(Document doc, IMediaDetail mediaDetailToSearch, String titleToSearch, String url) {
+		
+		//go throught the posts
+		Elements tableItensFound = doc.select("div#main > p:contains(Titles (Exact Matches)) + table");
+		
+		if(tableItensFound.size() > 0){
+		
+			Elements pElement = doc.select("div#main > p:contains(Titles (Exact Matches))");
+			
+			int totalFound = 0;
+			
+			String numberOfResultsText = pElement.text();
+			Pattern pattern = Pattern.compile(".+Displaying\\s(\\d+)\\sResults.+");
+			Matcher matcher = pattern.matcher(numberOfResultsText);
+			if(matcher.find()){
+				String numerOfResults = matcher.group(1);
+				totalFound = Integer.parseInt(numerOfResults);
+			}
+			
+			Elements itensFound = tableItensFound.select("td:eq(2) > a");
+			
+			for(Element element : itensFound){
+				//A element containing the movie name and the link to the post page
+				String mediaTitle = element.text();
+				
+				double score = Util.compareAndScore(titleToSearch, mediaTitle);
+				
+				//comprare year
+				
+				if(totalFound == 1){
+					//if only one was found increase the score by 50%
+					score = score * 1.5;
+				}
+				
+				log.fine("Score: " + score + " Total Found : " + totalFound + 
+						" Media Title: " + titleToSearch + 
+						" Results Title: " + mediaTitle +
+						" URL: " + url);
+				
+				String mediaDetailsURL = element.attr("href");
+				
+				//MediaType mediaType = resolveMediaTypeByPostURL(mediaDetailsURL);
+				
+				SearchResult searchResult = null;//new SearchResult(mediaDetailsURL);
+				
+				//check if the score is above the minimum score
+				if(score > minimumScore){
+					//get the media type
+					return searchResult;
+				}
+				else if(score > 20){
+					if( ! candidateSearchResults.contains(searchResult) ){
+						candidateSearchResults.add(searchResult);
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+
+	protected void scrapPicture(final IMediaDetail mediaDetailToScrap, final String url) {
 		try {
 			Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(5000).get();
 			// img#primary-img
@@ -113,9 +248,9 @@ public class IMDBMovieScraper extends AbstractScraper {
 
 				final ImageInfo imageInfo = ImageInfo.createImageWithURL(pictureURL);
 
-				mediaDetail.setPosterImage(imageInfo);
+				mediaDetailToScrap.setPosterImage(imageInfo);
 
-				downloadPicture(mediaDetail, new ImageDownloadCallBack() {
+				downloadPicture(mediaDetailToScrap, new ImageDownloadCallBack() {
 					@Override
 					public void errorDownloading(Throwable th) {
 						log.warning("Image could not be downloaded. url: " + url);
@@ -133,41 +268,45 @@ public class IMDBMovieScraper extends AbstractScraper {
 			}
 		}
 		catch (IOException e) {
-			log.log(Level.WARNING, "Error fetching Media Name: " + mediaDetail + "  URL: " + url, e);
+			log.log(Level.WARNING, "Error fetching Media Name: " + mediaDetailToScrap + "  URL: " + url, e);
 		}
 	}
 
 	@Override
 	public void scrape(SearchResult searchResult) {
-		String url = searchResult.getURL();
-		scrape(url);
+		scrapeMediaDetails(mediaDetail, searchResult);
 	}
 
-	private void scrape(String url) {
+	protected void scrapeMediaDetails(final IMediaDetail mediaDetailToScrap, final SearchResult searchResult) {
 		try {
-			Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(5000).get();
-
-			scrapeDocument(doc, url);
-
+			Document doc = Jsoup.connect(searchResult.getURL()).userAgent(USER_AGENT).timeout(5000).get();
+			scrapeMovieDetailPageDocument(mediaDetailToScrap, doc, searchResult);
 		}
 		catch (IOException e) {
-			log.log(Level.WARNING, "Error fetching Media: " + mediaDetail + "  URL: " + url, e);
-			mediaDetail.setStatus(MediaStatus.ERROR);
+			log.log(Level.WARNING, "Error fetching Media: " + mediaDetailToScrap + "  URL: " + searchResult.getURL(), e);
+			mediaDetailToScrap.setStatus(MediaStatus.ERROR);
 		}
 	}
 
-	protected void scrapeDocument(Document doc, String url) {
+	//protected void scrapeSearchPageDocument(final IMediaDetail mediaDetailToScrap, Document doc, SearchResult searchResult) {
+		
+	//}
+	
+	protected void scrapeMovieDetailPageDocument(final IMediaDetail mediaDetailToScrap, Document doc, SearchResult searchResult) {
+		
+		String url = searchResult.getURL();
 		
 		try {
-			if(mediaDetail.getMediaType() == null){
+			if(mediaDetailToScrap.getMediaType() == null){
 				//TODO: IMplement the check for media type! .. use the genre for that
-				mediaDetail.setMediaType(MediaType.MOVIE);
+				mediaDetailToScrap.setMediaType(MediaType.MOVIE);
 			}
+			
 			//validate MediaFile
-			mediaDetail.ensureNFOExists();
-			MovieFileNFO movieFileNFO = (MovieFileNFO)mediaDetail.getMediaNFO();
+			mediaDetailToScrap.ensureNFOExists();
+			MovieFileNFO movieFileNFO = (MovieFileNFO)mediaDetailToScrap.getMediaNFO();
 			if(movieFileNFO == null){
-				log.warning("No scraping will be done! -> MediaNFO is null for MediaDetail: " + mediaDetail);
+				log.warning("No scraping will be done! -> MediaNFO is null for MediaDetail: " + mediaDetailToScrap);
 				return;
 			}
 			
@@ -177,7 +316,7 @@ public class IMDBMovieScraper extends AbstractScraper {
 				Element pictureAHref = getSingleElement(url, doc, "td#img_primary > a[onclick*=new Image()]");
 				if (pictureAHref != null) {
 					String pictureURL = "http://www.imdb.com" + pictureAHref.attr("href");
-					scrapPicture(mediaDetail, pictureURL);
+					scrapPicture(mediaDetailToScrap, pictureURL);
 				}
 				else {
 					// Log Picture not found
@@ -198,7 +337,7 @@ public class IMDBMovieScraper extends AbstractScraper {
 				// return since the most important info could not be found
 				return;
 			}
-			mediaDetail.setTitle(mediaTitle);
+			mediaDetailToScrap.setTitle(mediaTitle);
 			
 			//Original Title
 			Element spanOriginalTitle = getSingleElement(url, doc, "td#overview-top > h1.header > span.title-extra");
@@ -227,7 +366,7 @@ public class IMDBMovieScraper extends AbstractScraper {
 				// Log tag not found
 				log.fine("Year a[href] tag not found. url: " + url);
 			}
-			movieFileNFO.setYear(year);
+			mediaDetailToScrap.setYear(year);
 
 			String rating = null;
 			// rating
@@ -327,10 +466,7 @@ public class IMDBMovieScraper extends AbstractScraper {
 			String id = urlParts[urlParts.length-1];
 			movieFileNFO.setId(id);
 			
-			//TODO: Improve the XBMC Movie Schema.. nodes like genre has its own type when it should be string
-			//and Integer nodes are BidDecimal in java..
 			//genre
-			/*
 			String genre = "";
 			Element divGenres = getSingleElement(url, doc, "h4.inline:matchesOwn(Genres:)");
 			if(divGenres != null){
@@ -344,16 +480,16 @@ public class IMDBMovieScraper extends AbstractScraper {
 				log.fine("genre tag not found. url: " + url);
 			}
 			movieFileNFO.setGenre(genre);
-			*/
+			
 			
 			// TODO: .. more stuff to scrap form iMDB
 
-			mediaDetail.setStatus(MediaStatus.MEDIA_DETAILS_FOUND);
-			mediaDetail.save();
+			mediaDetailToScrap.setStatus(MediaStatus.MEDIA_DETAILS_FOUND);
+			mediaDetailToScrap.save();
 		}
 		catch (MediaFileException e) {
-			log.log(Level.WARNING, "Error saving media info Media: " + mediaDetail + "  URL: " + url, e);
-			mediaDetail.setStatus(MediaStatus.ERROR);
+			log.log(Level.WARNING, "Error saving media info Media: " + mediaDetailToScrap + "  URL: " + url, e);
+			mediaDetailToScrap.setStatus(MediaStatus.ERROR);
 		}
 	}
 

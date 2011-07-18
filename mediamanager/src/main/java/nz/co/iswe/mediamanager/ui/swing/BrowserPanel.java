@@ -12,7 +12,9 @@ import javax.swing.JPanel;
 
 import nz.co.iswe.mediamanager.media.file.MediaDetail;
 import nz.co.iswe.mediamanager.scraper.IScraper;
+import nz.co.iswe.mediamanager.scraper.MediaType;
 import nz.co.iswe.mediamanager.scraper.ScraperContext;
+import nz.co.iswe.mediamanager.scraper.SearchResult;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserNavigationEvent;
 
@@ -83,8 +85,19 @@ public class BrowserPanel extends JPanel {
 			JOptionPane.showMessageDialog(this, "You cannot scrape this page at the moment! There is not scraper component that support this page. Check the updates and try again.",
 					"Current page does not have a scraper!", JOptionPane.CLOSED_OPTION);
 		}
-		scraper.setURLToScrape(url);
-		JMainWindow.getInstance().scrape(scraper, mediaDetail);
+		else{
+			
+			SearchResult searchResult = scraper.createSearchResults(url, MediaType.MOVIE);
+			if(searchResult == null){
+				//can scrape this page
+				JOptionPane.showMessageDialog(this, "You cannot scrape this page! Make sure you navigate to the media detail before you click in scrape.",
+						"You cannot scrape this page!", JOptionPane.CLOSED_OPTION);
+			}
+			else{
+				JMainWindow.getInstance().scrape(mediaDetail, scraper, searchResult);
+			}
+			
+		}
 	}
 
 

@@ -36,7 +36,7 @@ public abstract class AbstractScraper implements IScraper {
 
 	protected IScrapingStatusObserver observer;
 
-	protected String urlToScrape;
+	//protected String urlToScrape;
 	
 	@Override
 	public void setMediaDefinition(IMediaDetail mediaDetail) {
@@ -125,9 +125,10 @@ public abstract class AbstractScraper implements IScraper {
 			return null;
 		}
 	}
-	
+	/*
 	@Override
 	public void setURLToScrape(String url) {
 		this.urlToScrape = url;
 	}
+	*/
 }

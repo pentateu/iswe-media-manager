@@ -14,6 +14,7 @@ import nz.co.iswe.mediamanager.media.MediaFileListener;
 import nz.co.iswe.mediamanager.scraper.IScraper;
 import nz.co.iswe.mediamanager.scraper.IScrapingStatusObserver;
 import nz.co.iswe.mediamanager.scraper.ScraperContext;
+import nz.co.iswe.mediamanager.scraper.SearchResult;
 
 public class MediaFileContext {
 
@@ -91,7 +92,7 @@ public class MediaFileContext {
 		return pathToMediaDetail.get(fileName);
 	}
 	
-	public void scrap(final IScrapingStatusObserver observer, final IScraper scraper, final MediaDetail mediaDetail) {
+	public void scrap(final IScrapingStatusObserver observer, final IScraper scraper, final MediaDetail mediaDetail, final SearchResult searchResult) {
 		stopScraping = false;
 
 		if (observer == null || mediaDetail == null) {
@@ -118,7 +119,7 @@ public class MediaFileContext {
 					
 					log.fine(" ### START - Scraping ### Media Detail: " + mediaDetail);
 
-					scraperContext.scrape(mediaDetail, scraper);
+					scraperContext.scrape(mediaDetail, scraper, searchResult);
 
 					long total = System.currentTimeMillis() - start;
 

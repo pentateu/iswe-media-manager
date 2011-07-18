@@ -66,6 +66,15 @@ public class Util {
 	public static String removeYearFromTitle(String title) {
 		return removeDoubleSpaces( title.replaceAll("\\(\\d{4}\\)", "") ).trim();
 	}
+	
+	public static Integer getYearFromTitle(String title) {
+		Pattern pattern = Pattern.compile("\\((\\d{4})\\)");
+		Matcher matcher = pattern.matcher(title);
+		if(matcher.find()){
+			return Integer.parseInt(matcher.group(1));
+		}
+		return null;
+	}
 
 	public static String removeDoubleSpaces(String value) {
 		return value.replaceAll("\\s{2,}", " ");

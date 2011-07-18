@@ -46,5 +46,7 @@ public interface IMediaDetail {
 
 	String getFileName();
 
+	void setYear(Integer year);
+	Integer getYear();
 	
 }
