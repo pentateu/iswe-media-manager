@@ -45,4 +45,24 @@
 
  - Implement a XML configuration file for the application
 
- 
+## Stuff from my first use 
+
+1) Delete button.. to delete the media.. I had a sample in my lista and i'd like to delete straight away
+
+2) button to say that the media it is actualy in its own folder.. this action will rename the current folder to match the media name
+
+3) When the media is not found and the broser opens.. clean-up the title name before searching in IMDB. Also provide a butto to go to ONEDDL or the prefered scraper/site and perform a search there.
+
+4) Ability to move all media with status OK to a target folder
+
+5) Ability to rename a media file
+
+6) button to play the media..
+
+7) When showing a candidate the Move button is taking into consideration the candidate and not the main media file and it is always enabled.
+
+8) In the media detail panel show
+  - Sinopse of the Movie
+  - Rating
+  - If it has sibtitle files or not
+  -  
