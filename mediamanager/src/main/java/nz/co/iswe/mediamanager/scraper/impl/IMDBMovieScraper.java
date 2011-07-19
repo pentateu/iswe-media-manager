@@ -36,6 +36,8 @@ public class IMDBMovieScraper extends AbstractScraper {
 	
 	protected Pattern movieDetailSubUrlPattern = Pattern.compile("^/title/\\w{2}\\d+/$");
 	
+	protected Pattern displayingXResultsPattern = Pattern.compile(".+Displaying\\s(\\d+)\\sResults.+");
+	
 	private List<SearchResult> candidateSearchResults = new ArrayList<SearchResult>();
 	
 	
@@ -189,8 +191,8 @@ public class IMDBMovieScraper extends AbstractScraper {
 			int totalFound = 0;
 			
 			String numberOfResultsText = pElement.text();
-			Pattern pattern = Pattern.compile(".+Displaying\\s(\\d+)\\sResults.+");
-			Matcher matcher = pattern.matcher(numberOfResultsText);
+			
+			Matcher matcher = displayingXResultsPattern.matcher(numberOfResultsText);
 			if(matcher.find()){
 				String numerOfResults = matcher.group(1);
 				totalFound = Integer.parseInt(numerOfResults);
@@ -204,7 +206,19 @@ public class IMDBMovieScraper extends AbstractScraper {
 				
 				double score = Util.compareAndScore(titleToSearch, mediaTitle);
 				
-				//comprare year
+				Integer mediaYear = null;
+				
+				//compare year if it is present in the mediaDetail
+				if(mediaDetailToSearch.getYear() != null && mediaYear != null){
+					if(mediaDetailToSearch.getYear().intValue() == mediaYear.intValue()){
+						//if the year matched double the score
+						score = score * 2;
+					}
+					else{
+						//if the year does not match decrease the score by 50%
+						score = score * 0.5;
+					}
+				}
 				
 				if(totalFound == 1){
 					//if only one was found increase the score by 50%

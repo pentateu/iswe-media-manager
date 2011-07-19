@@ -1,7 +1,11 @@
 
-1) Fix the unit tests errors due to the change to create the year field into the MediaDetail object. (Done)
+1) Continue with the implementation of the method: scrapeSearchPageDocument on IMDBMovieScraper
+	-> Think to move the IMDBMovieScraper scraper implementation to the script based approach
+		- having a generic scraper class based on a pattern that will use a script
+		  to perform the scraping
+		- use a XML to define a scraper and its script
+		  
 
-2) Continue with the implementation of the method: scrapeSearchPageDocument on IMDBMovieScraper
 
 ## Scraping
 
