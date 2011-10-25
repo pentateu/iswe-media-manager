@@ -30,7 +30,8 @@
 
  When actions like scrape again, confirm candidate, move to exclusive folder occur, need to refresh the MEdiaDetailPanel
  
-
+ 
+## Ability to receive RSS from teh Blogs and navigate through the new movies, select, discard and etd. when select copy the links and integrate with JDownloader.
 
 	  
 ## JUNIT
