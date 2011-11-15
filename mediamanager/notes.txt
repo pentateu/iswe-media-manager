@@ -1,3 +1,5 @@
+WORKING on ITEM 3 - LATEST CHANGE 15/Nov
+
 
 1) Continue with the implementation of the method: scrapeSearchPageDocument on IMDBMovieScraper
 	-> Think to move the IMDBMovieScraper scraper implementation to the script based approach
@@ -26,7 +28,7 @@
  	
  	- Ability to check whether a movie exists in the local library or not before download
 
-## IMprove
+## Improve
 
  When actions like scrape again, confirm candidate, move to exclusive folder occur, need to refresh the MEdiaDetailPanel
  
@@ -48,11 +50,17 @@
 
 ## Stuff from my first use 
 
-1) Delete button.. to delete the media.. I had a sample in my lista and i'd like to delete straight away
+1) DONE - Delete button.. to delete the media.. I had a sample in my list and i'd like to delete straight away
 
-2) button to say that the media it is actualy in its own folder.. this action will rename the current folder to match the media name
+2) Button to say that the media it is actually in its own folder.. this action will rename the current folder to match the media name
 
-3) When the media is not found and the broser opens.. clean-up the title name before searching in IMDB. Also provide a butto to go to ONEDDL or the prefered scraper/site and perform a search there.
+3) WORKING ON NOW: When the media is not found and the browser opens.. clean-up the title name before searching in IMDB. Also provide a button to go to ONEDDL or the preferred scraper/site and perform a search there.
+
+   IMPLMENTATION: Util.getImdbSearchByTitleURL is called to generate the IMDB Search URL and receives the mediaDetail.getTitle() as parameter. To implement this properly a centralized repository with all 
+   the trash words/sentences that each scraper defines should exists.. so the title cleaner method could use it.
+   I Should first implement the enhancement of having the script based scraper and the generic scraper + scraper defined in XML.. that mechanism should make usage of
+   a centralize repository for all the trash words/sentences.
+
 
 4) Ability to move all media with status OK to a target folder
 
@@ -60,10 +68,356 @@
 
 6) button to play the media..
 
+
 7) When showing a candidate the Move button is taking into consideration the candidate and not the main media file and it is always enabled.
 
-8) In the media detail panel show
+
+8) IN the media detail panel show
   - Sinopse of the Movie
   - Rating
   - If it has sibtitle files or not
   -  
+
+--- up to here added to the project notes --
+
+9) Sometimes when I go to IMDB using the browser and click scrape the Media Folder is not renamed accordinly to the media file name.
+9.10) When nothing is found and opens the IMDB website. The system should give the user file name options to use in the serarch: 
+Example: For "1-3-3-8.com_twiz-highlife-720p" the system should "clean" the name and suggest: "highlife" and the full name. so the user can choose.
+
+10) Improve performance by using mult-thread to scrap the media details.
+
+11) Error when doing scan now:
+
+
+12) When dispaying candidate show de post/page link and open browser
+
+E:\Movies\Media Manager>java -jar mediamanager_win.jar
+Jul 20, 2011 12:56:33 PM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\1-3-3-8 com the kennedys part
+1-part2 720p hdtv x264-bia\1-3-3-8 com the kennedys part1-part2 720p hdtv x264-b
+ia.mkv}]]
+Jul 20, 2011 12:56:33 PM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\1-3-3-8 com Transformers 1\1-
+3-3-8 com Transformers 1.avi}]]
+Exception in thread "AWT-EventQueue-0" java.lang.ClassCastException: nz.co.iswe.
+mediamanager.media.folder.MediaFolder cannot be cast to nz.co.iswe.mediamanager.
+media.folder.NestedMediaFolder
+        at nz.co.iswe.mediamanager.media.folder.MediaFolderContext.getNestedMedi
+aFolder(MediaFolderContext.java:49)
+        at nz.co.iswe.mediamanager.media.file.CandidateMediaDetail.buildCandidat
+eMediaFolder(CandidateMediaDetail.java:41)
+        at nz.co.iswe.mediamanager.media.file.CandidateMediaDetail.<init>(Candid
+ateMediaDetail.java:23)
+        at nz.co.iswe.mediamanager.media.file.CandidateMediaDetail.<init>(Candid
+ateMediaDetail.java:69)
+        at nz.co.iswe.mediamanager.media.file.MediaDetail.lookUpCandidates(Media
+Detail.java:185)
+        at nz.co.iswe.mediamanager.media.file.MediaDetail.init(MediaDetail.java:
+118)
+        at nz.co.iswe.mediamanager.media.file.MediaFileContext.getMediaFile(Medi
+aFileContext.java:56)
+        at nz.co.iswe.mediamanager.ui.swing.JMainWindow.processFolder(JMainWindo
+w.java:219)
+        at nz.co.iswe.mediamanager.ui.swing.JMainWindow.processFolder(JMainWindo
+w.java:214)
+        at nz.co.iswe.mediamanager.ui.swing.JMainWindow.scanFolder(JMainWindow.j
+ava:201)
+        at nz.co.iswe.mediamanager.ui.swing.JMainWindow.access$3(JMainWindow.jav
+a:177)
+        at nz.co.iswe.mediamanager.ui.swing.JMainWindow$4.actionPerformed(JMainW
+indow.java:135)
+        at javax.swing.AbstractButton.fireActionPerformed(Unknown Source)
+        at javax.swing.AbstractButton$Handler.actionPerformed(Unknown Source)
+        at javax.swing.DefaultButtonModel.fireActionPerformed(Unknown Source)
+        at javax.swing.DefaultButtonModel.setPressed(Unknown Source)
+        at javax.swing.plaf.basic.BasicButtonListener.mouseReleased(Unknown Sour
+ce)
+        at java.awt.Component.processMouseEvent(Unknown Source)
+        at javax.swing.JComponent.processMouseEvent(Unknown Source)
+        at java.awt.Component.processEvent(Unknown Source)
+        at java.awt.Container.processEvent(Unknown Source)
+        at java.awt.Component.dispatchEventImpl(Unknown Source)
+        at java.awt.Container.dispatchEventImpl(Unknown Source)
+        at java.awt.Component.dispatchEvent(Unknown Source)
+        at java.awt.LightweightDispatcher.retargetMouseEvent(Unknown Source)
+        at java.awt.LightweightDispatcher.processMouseEvent(Unknown Source)
+        at java.awt.LightweightDispatcher.dispatchEvent(Unknown Source)
+        at java.awt.Container.dispatchEventImpl(Unknown Source)
+        at java.awt.Window.dispatchEventImpl(Unknown Source)
+        at java.awt.Component.dispatchEvent(Unknown Source)
+        at java.awt.EventQueue.dispatchEventImpl(Unknown Source)
+        at java.awt.EventQueue.access$000(Unknown Source)
+        at java.awt.EventQueue$1.run(Unknown Source)
+        at java.awt.EventQueue$1.run(Unknown Source)
+        at java.security.AccessController.doPrivileged(Native Method)
+        at java.security.AccessControlContext$1.doIntersectionPrivilege(Unknown
+Source)
+        at java.security.AccessControlContext$1.doIntersectionPrivilege(Unknown
+Source)
+        at java.awt.EventQueue$2.run(Unknown Source)
+        at java.awt.EventQueue$2.run(Unknown Source)
+        at java.security.AccessController.doPrivileged(Native Method)
+        at java.security.AccessControlContext$1.doIntersectionPrivilege(Unknown
+Source)
+        at java.awt.EventQueue.dispatchEvent(Unknown Source)
+        at java.awt.EventDispatchThread.pumpOneEventForFilters(Unknown Source)
+        at java.awt.EventDispatchThread.pumpEventsForFilter(Unknown Source)
+        at java.awt.EventDispatchThread.pumpEventsForHierarchy(Unknown Source)
+        at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+        at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+        at java.awt.EventDispatchThread.run(Unknown Source)
+
+
+------------------------------------------
+
+13) Error Log:
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\1-3-3-8.com_vmt-chgplan-xvid.
+avi\1-3-3-8.com_vmt-chgplan-xvid.avi}]]
+Aug 19, 2011 11:43:24 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\1-3-3-8.com_vmt-h2oil-xvid.av
+i\1-3-3-8.com_vmt-h2oil-xvid.avi}]]
+Aug 19, 2011 11:43:24 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\1-3-3-8.com_weekenda-xvid-sml
+.avi\1-3-3-8.com_weekenda-xvid-sml.avi}]]
+Aug 19, 2011 11:43:24 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\1-3-3-8.com_weekendb-xvid-sml
+.avi\1-3-3-8.com_weekendb-xvid-sml.avi}]]
+Aug 19, 2011 11:43:25 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\cbgb-wayback720.1500\1-3-3-8.
+com_cbgb-wayback720.mkv}]]
+Aug 19, 2011 11:43:25 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\flhd-withlove720p.1500\1-3-3-
+8.com_flhd-withlove720p.mkv}]]
+Aug 19, 2011 11:43:25 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\Just.Go.With.It.2011.720p.Blu
+Ray.x264-Felony\1-3-3-8.com_f-justgowithit720\1-3-3-8.com_f-justgowithit720.mkv}
+]]
+Aug 19, 2011 11:43:25 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\MASSIVE_ENG_D1\MASSIVE_ENG_D1
+.Title2.mkv}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\MASSIVE_ENG_D1\MASSIVE_ENG_D1
+.Title3.mkv}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\MASSIVE_ENG_D1\MASSIVE_ENG_D1
+.Title4.mkv}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\MASSIVE_ENG_D1\MASSIVE_ENG_D1
+.Title5.mkv}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\MASSIVE_ENG_D1\MASSIVE_ENG_D1
+.Title6.mkv}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\MASSIVE_ENG_D2\MASSIVE_ENG_D2
+.Title2.mkv}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\MASSIVE_ENG_D2\MASSIVE_ENG_D2
+.Title3.mkv}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\MASSIVE_ENG_D2\MASSIVE_ENG_D2
+.Title4.mkv}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\MASSIVE_ENG_D2\MASSIVE_ENG_D2
+.Title5.mkv}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\MASSIVE_ENG_D2\MASSIVE_ENG_D2
+.Title6.mkv}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\moovee-sk2mc.720p.1500\1-3-3-
+8.com_moovee-sk2mc.720p.mkv}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\OneDDL.com-refined-ikoafs-720
+p\OneDDL.com-refined-ikoafs-720p.mkv}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\OneDDL.com-vmt-babybe-xvid.av
+i\OneDDL.com-vmt-babybe-xvid.avi}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\RMCs-1000tru.1000tre.up.anjin
+ha_do_mal.filewarez.tv.DVDRip.XviD-MULTiMP3.avi\RMCs-1000tru.1000tre.up.anjinha_
+do_mal.filewarez.tv.DVDRip.XviD-MULTiMP3.avi}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\SJAB by Danilo inthegenius.av
+i\SJAB by Danilo inthegenius.avi}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\Terca-Insana-Ventilador-de-Al
+egria.2008.DVDRip.XVID.avi\Terca-Insana-Ventilador-de-Alegria.2008.DVDRip.XVID.a
+vi}]]
+Aug 19, 2011 11:43:26 AM nz.co.iswe.mediamanager.media.file.MediaDetail lookUpNF
+O
+FINE: MediaNFO not found. MediaDetail: [MediaDefinition  Title: null Year: null
+Status: NO_MEDIA_DETAILS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\twiz-littlefockers720p\1-3-3-
+8.com_twiz-littlefockers720p.mkv}]]
+Aug 19, 2011 11:43:52 AM nz.co.iswe.mediamanager.media.file.MediaFileContext sta
+rtScrap
+INFO: Start scraping queue size: 32
+Aug 19, 2011 11:43:52 AM nz.co.iswe.mediamanager.media.file.MediaFileContext$2 r
+un
+FINE:  ### START - Scraping ### Media Detail: [MediaDefinition  Title: 1-3-3-8 c
+om aaf-vanquisher09 1080p Year: null Status: NO_MEDIA_DETAILS Media NFO: null Bl
+ogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\1-3-3-8 com aaf-vanquisher09
+1080p\1-3-3-8 com aaf-vanquisher09 1080p.mkv}]]
+Aug 19, 2011 11:43:52 AM nz.co.iswe.mediamanager.scraper.impl.OneDDLScraper sear
+ch
+FINE: Search for media : 1-3-3-8 com aaf-vanquisher09 1080p
+Aug 19, 2011 11:43:55 AM nz.co.iswe.mediamanager.scraper.impl.OneDDLScraper sear
+ch
+FINE: Score: 37.5 Total Found : 1 Media Title: 1-3-3-8 com aaf-vanquisher09 1080
+p Post Title: Vanquisher.2009.1080p.BluRay.x264-aAF normalizePostTitle: false UR
+L: http://www.oneddl.com/?s=1-3-3-8+com+aaf-vanquisher09+1080p
+Aug 19, 2011 11:43:56 AM nz.co.iswe.mediamanager.scraper.impl.OneDDLScraper sear
+ch
+FINE: Score: 37.5 Total Found : 1 Media Title: 1-3-3-8 com aaf-vanquisher09 1080
+p Post Title: Vanquisher.2009.1080p.BluRay.x264-aAF normalizePostTitle: false UR
+L: http://www.oneddl.com/?s=1-3-3-8+com+aaf-vanquisher09+1080p
+Aug 19, 2011 11:43:59 AM nz.co.iswe.mediamanager.scraper.impl.OneDDLScraper sear
+ch
+FINE: Score: 37.5 Total Found : 1 Media Title: 1 3 3 8 com aaf vanquisher09 1080
+p Post Title: Vanquisher 2009 1080p   aAF normalizePostTitle: true URL: http://w
+ww.oneddl.com/?s=1+3+3+8+com+aaf+vanquisher09+1080p
+Aug 19, 2011 11:43:59 AM nz.co.iswe.mediamanager.scraper.impl.OneDDLScraper sear
+chAndScrap
+FINE: Search NOT succesfull! Number of candidates found: 1
+Aug 19, 2011 11:43:59 AM nz.co.iswe.mediamanager.media.file.MediaFileContext$2 r
+un
+SEVERE: Error Scraping Media File: [MediaDefinition  Title: 1-3-3-8 com aaf-vanq
+uisher09 1080p Year: null Status: CANDIDATE_LIST_FOUND Media NFO: null BlogPostU
+RL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\1-3-3-8 com aaf-vanquisher09
+1080p\1-3-3-8 com aaf-vanquisher09 1080p.mkv}]]
+java.lang.ClassCastException: nz.co.iswe.mediamanager.media.folder.MediaFolder c
+annot be cast to nz.co.iswe.mediamanager.media.folder.NestedMediaFolder
+        at nz.co.iswe.mediamanager.media.folder.MediaFolderContext.getNestedMedi
+aFolder(MediaFolderContext.java:49)
+        at nz.co.iswe.mediamanager.media.file.CandidateMediaDetail.buildCandidat
+eMediaFolder(CandidateMediaDetail.java:41)
+        at nz.co.iswe.mediamanager.media.file.CandidateMediaDetail.<init>(Candid
+ateMediaDetail.java:23)
+        at nz.co.iswe.mediamanager.scraper.impl.OneDDLScraper.scrapCandidates(On
+eDDLScraper.java:164)
+        at nz.co.iswe.mediamanager.scraper.impl.OneDDLScraper.searchAndScrap(One
+DDLScraper.java:106)
+        at nz.co.iswe.mediamanager.scraper.ScraperContext.scrapeImpl(ScraperCont
+ext.java:117)
+        at nz.co.iswe.mediamanager.scraper.ScraperContext.scrape(ScraperContext.
+java:84)
+        at nz.co.iswe.mediamanager.scraper.ScraperContext.scrape(ScraperContext.
+java:51)
+        at nz.co.iswe.mediamanager.media.file.MediaFileContext$2.run(MediaFileCo
+ntext.java:170)
+java.lang.ClassCastException: nz.co.iswe.mediamanager.media.folder.MediaFolder c
+annot be cast to nz.co.iswe.mediamanager.media.folder.NestedMediaFolder
+        at nz.co.iswe.mediamanager.media.folder.MediaFolderContext.getNestedMedi
+aFolder(MediaFolderContext.java:49)
+        at nz.co.iswe.mediamanager.media.file.CandidateMediaDetail.buildCandidat
+eMediaFolder(CandidateMediaDetail.java:41)
+        at nz.co.iswe.mediamanager.media.file.CandidateMediaDetail.<init>(Candid
+ateMediaDetail.java:23)
+        at nz.co.iswe.mediamanager.scraper.impl.OneDDLScraper.scrapCandidates(On
+eDDLScraper.java:164)
+        at nz.co.iswe.mediamanager.scraper.impl.OneDDLScraper.searchAndScrap(One
+DDLScraper.java:106)
+        at nz.co.iswe.mediamanager.scraper.ScraperContext.scrapeImpl(ScraperCont
+ext.java:117)
+        at nz.co.iswe.mediamanager.scraper.ScraperContext.scrape(ScraperContext.
+java:84)
+        at nz.co.iswe.mediamanager.scraper.ScraperContext.scrape(ScraperContext.
+java:51)
+        at nz.co.iswe.mediamanager.media.file.MediaFileContext$2.run(MediaFileCo
+ntext.java:170)
+Aug 19, 2011 11:44:14 AM nz.co.iswe.mediamanager.media.file.MediaFileContext$2 r
+un
+FINE:  ### START - Scraping ### Media Detail: [MediaDefinition  Title: 1-3-3-8 c
+om the kennedys part1-part2 720p hdtv x264-bia Year: null Status: NO_MEDIA_DETAI
+LS Media NFO: null BlogPostURL: null
+Files: [{mediaFile=E:\Completed Downloads\To Scrap\1-3-3-8 com the kennedys part
+1-part2 720p hdtv x264-bia\1-3-3-8 com the kennedys part1-part2 720p hdtv x264-b
+ia.mkv}]]
+Aug 19, 2011 11:44:14 AM nz.co.iswe.mediamanager.scraper.impl.OneDDLScraper sear
+ch
+FINE: Search for media : 1-3-3-8 com the kennedys part1-part2 720p hdtv x264-bia
+
+Aug 19, 2011 11:44:22 AM nz.co.iswe.mediamanager.scraper.impl.OneDDLScraper sear
+ch
+FINE: Score: 163.63636363636363 Total Found : 1 Media Title: 1 3 3 8 com the ken
+nedys part1 part2  hdtv  bia Post Title: The Kennedys Part1 Part2   BiA & The Ke
+nnedys Part1 Part2    BiA normalizePostTitle: true URL: http://www.oneddl.com/?s
+=1+3+3+8+com+the+kennedys+part1+part2++hdtv++bia
+Aug 19, 2011 11:44:22 AM nz.co.iswe.mediamanager.scraper.impl.OneDDLScraper sear
+chAndScrap
+

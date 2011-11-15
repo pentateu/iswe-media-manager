@@ -7,8 +7,8 @@ public class CreateMediaFolderAndFilesStructure {
 
 	public static void main(String[] args)   {
 
-		String from = "\\\\HTPC\\Filmes\\New\\Certified Copy (2010)";
-		String to = "G:\\Media\\template//Certified Copy (2010)";
+		String from = "/Volumes/Completed Downloads/error";
+		String to = "/Users/pentateu/git/iswe-media-manager/mediamanager/src/test/resources/template-media-folders";
 
 		File fileFrom = new File(from);
 		File fileTo = new File(to);

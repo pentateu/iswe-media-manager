@@ -634,30 +634,6 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 		}
 	}
 
-	private boolean deleteAll(File file) {
-		if (!file.exists()) {
-			return true;
-		}
-
-		File[] files = file.listFiles();
-		if (file.isDirectory() && files.length > 0) {
-			boolean result = true;
-			for (File item : files) {
-				boolean deleted = deleteAll(item);
-				if (!deleted) {
-					result = false;
-				}
-			}
-			file.delete();
-			return result;
-		} else if (file.isDirectory() && files.length == 0) {
-			return file.delete();
-		} else if (file.isFile()) {
-			return file.delete();
-		}
-		return false;
-	}
-
 	
 	/**
 	 * Returns the File name without extension
@@ -885,5 +861,12 @@ public class MediaDetail extends AbstractMediaFolderChangeAware implements IMedi
 
 	public String getOriginalFileName() {
 		return originalFileName;
+	}
+
+	/**
+	 * Delete the media file
+	 */
+	public boolean delete() {
+		return deleteFile(MEDIA_FILE);
 	}
 }

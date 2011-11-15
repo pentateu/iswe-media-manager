@@ -40,7 +40,7 @@ public class MediaDetailPanel extends JPanel {
 	private JLabel yearValueLabel;
 	private JPanel imageContainer;
 	private ImagePanel imagePanel;
-	private JButton scrapButton;
+	private JButton scrapOrConfirmCandidateButton;
 	
 	private MediaDetail mediaDetail;
 	private JLabel typeValueLabel;
@@ -137,24 +137,33 @@ public class MediaDetailPanel extends JPanel {
 		flowLayout.setHgap(15);
 		flowLayout.setVgap(0);
 		panel.setBackground(Color.WHITE);
-		add(panel, "cell 3 8 3 1,alignx left,aligny center");
+		add(panel, "flowx,cell 3 8 3 1,alignx left,aligny center");
 		
 		browserButton = new JButton("  Browser ");
 		browserButton.setIcon(new ImageIcon(MediaDetailPanel.class.getResource("/nz/co/iswe/mediamanager/ui/img/browse_ico.png")));
 		browserButton.setToolTipText("Open Browser");
 		panel.add(browserButton);
 		
-		scrapButton = new JButton(" Scrape Again");
-		scrapButton.setToolTipText("Scrape Media Detail");
-		scrapButton.setIcon(new ImageIcon(MediaDetailPanel.class.getResource("/nz/co/iswe/mediamanager/ui/img/scrap_again_ico.png")));
-		panel.add(scrapButton);
-		scrapButton.addActionListener(new ActionListener() {
+		scrapOrConfirmCandidateButton = new JButton(" Scrape Again");
+		scrapOrConfirmCandidateButton.setToolTipText("Scrape Media Detail");
+		scrapOrConfirmCandidateButton.setIcon(new ImageIcon(MediaDetailPanel.class.getResource("/nz/co/iswe/mediamanager/ui/img/scrap_again_ico.png")));
+		panel.add(scrapOrConfirmCandidateButton);
+		
+		JButton deleteButton = new JButton("Delete File");
+		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				scrapAgain();
+				deleteMediaFile();
+			}
+		});
+		deleteButton.setIcon(new ImageIcon(MediaDetailPanel.class.getResource("/nz/co/iswe/mediamanager/ui/img/delete_ico.png")));
+		panel.add(deleteButton);
+		scrapOrConfirmCandidateButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				scrapAgainOrConfirmCandidate();
 			}
 		});
 		browserButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				openBrowser();
 			}
 		});
@@ -223,9 +232,28 @@ public class MediaDetailPanel extends JPanel {
 			listener.showBrowser(mediaDetail);
 		}
 	}
+	
+	/**
+	 * Delete the media file
+	 */
+	protected void deleteMediaFile() {
+		if(mediaDetail.delete()){
+			JOptionPane.showMessageDialog(this,
+					"Media file deleted successfully!", 
+					"Deleting the Media File!",
+					JOptionPane.CLOSED_OPTION);
+		}
+		else{
+			JOptionPane.showMessageDialog(this,
+					"Media file coulf not be deleted. Try again !", 
+					"Deleting the Media File!",
+					JOptionPane.CLOSED_OPTION);
+		}
+	}
 
-	protected void scrapAgain() {
+	protected void scrapAgainOrConfirmCandidate() {
 		if(isCandidate(mediaDetail)){
+			//Confirm the candidate
 			
 			//candidate info is correct ;-)
 			CandidateMediaDetail candidateMediaDefinition = (CandidateMediaDetail)mediaDetail;
@@ -243,6 +271,7 @@ public class MediaDetailPanel extends JPanel {
 			}
 		}
 		else{
+			//Scrape Again
 			//Locate the right scraper component
 			JMainWindow.getInstance().scrape(mediaDetail);
 		}
@@ -289,9 +318,9 @@ public class MediaDetailPanel extends JPanel {
 		renderImage(mediaDetail);
 		
 		if(isCandidate(mediaDetail)){
-			scrapButton.setText("Awesome!");
-			scrapButton.setToolTipText("Confirm that this is right media details.");
-			scrapButton.setIcon(new ImageIcon(MediaDetailPanel.class.getResource("/nz/co/iswe/mediamanager/ui/img/good_ico.png")));
+			scrapOrConfirmCandidateButton.setText("Awesome!");
+			scrapOrConfirmCandidateButton.setToolTipText("Confirm that this is right media details.");
+			scrapOrConfirmCandidateButton.setIcon(new ImageIcon(MediaDetailPanel.class.getResource("/nz/co/iswe/mediamanager/ui/img/good_ico.png")));
 		}
 	}
 

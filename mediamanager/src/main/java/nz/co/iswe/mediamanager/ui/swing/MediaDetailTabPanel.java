@@ -118,12 +118,12 @@ public class MediaDetailTabPanel extends JPanel {
 		//get the browser URL
 		
 		//1: Try the Blog post
-		if(null == null && mediaDetail.getBlogPostURL() != null ){
+		if(mediaDetail.getBlogPostURL() != null ){
 			url = mediaDetail.getBlogPostURL();
 		}
 		
 		//2 : try the IMDB
-		if(null == null && mediaDetail.getMediaNFO() != null ){
+		if(mediaDetail.getMediaNFO() != null ){
 			MovieFileNFO movieFileNFO = (MovieFileNFO)mediaDetail.getMediaNFO();
 			if(movieFileNFO.getId() != null){
 				url = Util.getImdbTitleURL(movieFileNFO.getId());
@@ -139,16 +139,21 @@ public class MediaDetailTabPanel extends JPanel {
 		browserPanel.navigateTo(url);
 	}
 	
+	/**
+	 * Display the Media detail on the Media Detail Panel
+	 * @param mediaDetail
+	 */
 	public void showMediaDefinition(final MediaDetail mediaDetail) {
 		
 		if(mediaFileDefinitionBeingDisplayed != null && mediaFileDefinitionBeingDisplayed == mediaDetail){
-			//void doing it twice
+			//avoid doing it twice
 			return;
 		}
 		
 		//populate
 		mediaFileDefinitionBeingDisplayed = mediaDetail;
 		
+		//clear the panel
 		clear();
 		
 		fileName = mediaDetail.getMainFile().getPath();

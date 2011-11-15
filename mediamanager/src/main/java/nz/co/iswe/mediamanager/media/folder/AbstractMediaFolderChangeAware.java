@@ -59,6 +59,41 @@ public abstract class AbstractMediaFolderChangeAware implements MediaFolderChang
 		return renamed;
 	}
 	
+
+	/**
+	 * Delete the file (and any nested in case od a folder) from the file system
+	 * 
+	 * @param key
+	 */
+	protected boolean deleteFile(String key) {
+		return deleteAll(files.get(key));
+	}
+
+	
+	protected boolean deleteAll(File file) {
+		if (!file.exists()) {
+			return true;
+		}
+
+		File[] files = file.listFiles();
+		if (file.isDirectory() && files.length > 0) {
+			boolean result = true;
+			for (File item : files) {
+				boolean deleted = deleteAll(item);
+				if (!deleted) {
+					result = false;
+				}
+			}
+			file.delete();
+			return result;
+		} else if (file.isDirectory() && files.length == 0) {
+			return file.delete();
+		} else if (file.isFile()) {
+			return file.delete();
+		}
+		return false;
+	}
+	
 	protected boolean moveTo(String key, File newFile) throws MediaFileException {
 		boolean moved = false;
 		File file = getFile(key);

@@ -114,7 +114,7 @@ public class Util {
 		
 		//long fileSize = item.get
 		
-		// TODO: IMprove to test the file size
+		// TODO: Improve to test the file size
 		return item.getName().matches(".+\\.sample\\..+");
 	}
 
@@ -263,6 +263,10 @@ public class Util {
 	}
 
 	public static String getImdbSearchByTitleURL(String title) {
+		
+		//clean the title
+		
+		
 		return "http://www.imdb.com/find?s=all&q=" + buildURLQuery(title) ;
 	}
 

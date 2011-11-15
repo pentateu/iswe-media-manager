@@ -39,6 +39,15 @@ public class MediaFileMetadata {
 	
 	
 
+	/**
+	 * Method that look for other mult-part sibling files within the same folder.
+	 * 
+	 * Example:  
+	 * 22.Bullets.2010 - cd1.avi
+	 * 22.Bullets.2010 - cd2.avi
+	 * 
+	 * @throws MediaFileException
+	 */
 	private void lookUpMultiPartSiblings() throws MediaFileException {
 		//look for number sufix
 		String[] multiPartSufix = Util.getMultiPartSufix(file.getName());
